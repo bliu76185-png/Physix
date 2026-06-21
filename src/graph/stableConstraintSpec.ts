@@ -90,7 +90,6 @@ export function repairStableConstraintSpec(graph: PhysicsGraph): PhysicsGraph {
   repaired = repairObjectRoles(repaired);
   repaired = repairConstraintMetadata(repaired);
   repaired = repairEventControls(repaired);
-  repaired = repairGround(repaired);
   return repaired;
 }
 
@@ -355,27 +354,6 @@ function findConstraintCycle(constraints: ConstraintInteraction[]): string[] | n
     seen.push(constraint.id);
   }
   return null;
-}
-
-function repairGround(graph: PhysicsGraph): PhysicsGraph {
-  const isGround = (obj: PhysicsGraph["objects"][number]) => {
-    const label = (obj.label ?? "").toLowerCase();
-    return label.includes("ground") || label.includes("floor") || label.includes("地面") || label.includes("底板");
-  };
-  const ground = graph.objects.find(isGround);
-  if (!ground || ground.geometry?.type !== "box") return graph;
-  const bounds = graph.world.bounds;
-  if (!bounds) return graph;
-  const worldW = bounds.max[0] - bounds.min[0];
-  const w = Math.max(worldW * 3, 100);
-  return {
-    ...graph,
-    objects: graph.objects.map((obj) =>
-      obj.id === ground.id && obj.geometry?.type === "box"
-        ? { ...obj, geometry: { ...obj.geometry, size: [w, obj.geometry.size[1]] } }
-        : obj
-    ),
-  };
 }
 
 function markRepaired(metadata: Metadata): Metadata {
