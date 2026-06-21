@@ -1,0 +1,81 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "px", "time": "s", "mass": "kg" },
+    "scale": 1,
+    "bounds": { "min": [0, 0], "max": [720, 560] },
+    "constants": { "g": 980 },
+    "gravity": { "vector": [0, 980] }
+  },
+  "objects": [
+    {
+      "id": "ball",
+      "label": "下落小球",
+      "type": "particle",
+      "properties": { "mass": 1, "radius": 18, "material": "rubber" },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 18 },
+      "metadata": { "render": { "color": "#1f8a70", "visible": true, "debug": true } }
+    },
+    {
+      "id": "ground",
+      "label": "地面",
+      "type": "rigid_body",
+      "properties": { "mass": 1000000, "inertia": 1000000, "material": "concrete", "restitution": 0.78 },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "geometry": { "type": "box", "size": [720, 32] },
+      "metadata": { "fixed": true, "render": { "color": "#6c757d", "visible": true, "debug": false } }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "gravity_on_ball",
+      "type": "field",
+      "model": "uniform",
+      "field": "earth_gravity",
+      "applies_to": ["ball"]
+    },
+    {
+      "id": "ground_contact",
+      "type": "constraint",
+      "model": "inequality",
+      "between": ["ball", "ground"],
+      "parameters": { "condition": "ball.y <= ground.top" }
+    }
+  ],
+  "fields": [
+    {
+      "id": "earth_gravity",
+      "model": "uniform",
+      "vector": [0, 980],
+      "metadata": { "render": { "color": "#2f9e44", "pointShape": "circle", "fieldDensity": 0.8, "opacity": 0.5 } }
+    }
+  ],
+  "initial_state": {
+    "ball": { "position": [240, 80], "velocity": [0, 0] },
+    "ground": { "position": [360, 520], "velocity": [0, 0] }
+  },
+  "events": [
+    {
+      "id": "impact",
+      "trigger": "impact",
+      "condition": "ball.y <= ground.top",
+      "action": { "type": "modify", "target": "ball", "velocity": "reflect" }
+    }
+  ],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 6",
+    "keyframes": [
+      { "t": 0, "state": "initial" },
+      { "t": 1.2, "event": "impact" }
+    ]
+  }
+}

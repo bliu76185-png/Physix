@@ -1,0 +1,67 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "px", "time": "s", "mass": "kg" },
+    "scale": 1,
+    "bounds": { "min": [0, 0], "max": [720, 560] },
+    "constants": {}
+  },
+  "objects": [
+    {
+      "id": "anchor",
+      "label": "固定点",
+      "type": "particle",
+      "properties": { "mass": 1000000, "radius": 8, "material": "steel" },
+      "degrees_of_freedom": { "translation": false },
+      "geometry": { "type": "circle", "radius": 8 },
+      "metadata": { "fixed": true, "render": { "color": "#555", "visible": true, "debug": true } }
+    },
+    {
+      "id": "block",
+      "label": "弹簧振子",
+      "type": "particle",
+      "properties": { "mass": 2, "radius": 22, "material": "steel" },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 22 },
+      "metadata": { "render": { "color": "#1f8a70", "visible": true, "debug": true } }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "spring_anchor_block",
+      "type": "constraint",
+      "model": "distance",
+      "between": ["anchor", "block"],
+      "parameters": {
+        "value": 130,
+        "compliance": 0.03125
+      },
+      "metadata": { "render": { "color": "#7048e8", "visible": true, "debug": true } }
+    }
+  ],
+  "fields": [],
+  "initial_state": {
+    "anchor": { "position": [260, 260], "velocity": [0, 0] },
+    "block": { "position": [430, 260], "velocity": [0, 0] }
+  },
+  "events": [
+    {
+      "id": "max_extension",
+      "trigger": "constraint_saturated",
+      "condition": "distance(anchor, block) >= 130",
+      "action": { "type": "modify_constraint", "target": "spring_anchor_block" }
+    }
+  ],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "energy": true,
+    "constraint_error": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 10",
+    "keyframes": [
+      { "t": 0, "state": "initial" }
+    ]
+  }
+}

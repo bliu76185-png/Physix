@@ -1,0 +1,333 @@
+{
+  "_title": "两个不同倾角的斜面连接，物块从一端滑向另一端",
+  "_prompt": "两个不同倾角的斜面连接，物块从一端滑向另一端",
+  "_generatedAt": "2026-06-21T16:52:45.638Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "bounds": {
+      "min": [
+        -6,
+        -2
+      ],
+      "max": [
+        4,
+        4
+      ]
+    },
+    "gravity": {
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "ground",
+      "label": "Ground Floor",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "friction": 0.5,
+        "restitution": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          100,
+          0.4
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#6c757d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "incline1",
+      "label": "Left Incline 30 degrees",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "friction": 0.2,
+        "restitution": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          4,
+          0.2
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#868e96",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "incline2",
+      "label": "Right Incline 45 degrees",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "friction": 0.2,
+        "restitution": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          4,
+          0.2
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#868e96",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "block",
+      "label": "Sliding Block",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.15,
+        "friction": 0.2,
+        "restitution": 0
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#1f8a70",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "gravity_on_block",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "block"
+      ]
+    },
+    {
+      "id": "contact_block_incline1",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "block",
+        "incline1"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0,
+        "friction": 0.2
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "contact"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "contact_block_incline2",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "block",
+        "incline2"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0,
+        "friction": 0.2
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "contact"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "contact_block_ground",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "block",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0,
+        "friction": 0.3
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "contact"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  ],
+  "initial_state": {
+    "ground": {
+      "position": [
+        0,
+        -1.5
+      ],
+      "velocity": [
+        0,
+        0
+      ],
+      "rotation": 0
+    },
+    "incline1": {
+      "position": [
+        -2,
+        1
+      ],
+      "velocity": [
+        0,
+        0
+      ],
+      "rotation": -0.5236
+    },
+    "incline2": {
+      "position": [
+        -1.586,
+        1.414
+      ],
+      "velocity": [
+        0,
+        0
+      ],
+      "rotation": 0.7854
+    },
+    "block": {
+      "position": [
+        -1,
+        2
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "power": true,
+    "work": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 10",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

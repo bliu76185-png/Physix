@@ -1,0 +1,43 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "px", "time": "s", "mass": "kg" },
+    "scale": 1,
+    "bounds": { "min": [0, 0], "max": [720, 560] },
+    "constants": {}
+  },
+  "objects": [
+    { "id": "p0", "label": "链端", "type": "particle", "properties": { "mass": 1000000, "radius": 7, "material": "steel" }, "degrees_of_freedom": { "translation": false }, "geometry": { "type": "circle", "radius": 7 }, "metadata": { "fixed": true, "render": { "color": "#555", "visible": true } } },
+    { "id": "p1", "label": "链 1", "type": "particle", "properties": { "mass": 1, "radius": 8, "material": "steel" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 8 }, "metadata": { "render": { "color": "#1f8a70", "visible": true } } },
+    { "id": "p2", "label": "链 2", "type": "particle", "properties": { "mass": 1, "radius": 8, "material": "steel" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 8 }, "metadata": { "render": { "color": "#1f8a70", "visible": true } } },
+    { "id": "p3", "label": "链 3", "type": "particle", "properties": { "mass": 1, "radius": 8, "material": "steel" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 8 }, "metadata": { "render": { "color": "#1f8a70", "visible": true } } },
+    { "id": "p4", "label": "链 4", "type": "particle", "properties": { "mass": 1, "radius": 8, "material": "steel" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 8 }, "metadata": { "render": { "color": "#1f8a70", "visible": true } } },
+    { "id": "p5", "label": "链 5", "type": "particle", "properties": { "mass": 1, "radius": 8, "material": "steel" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 8 }, "metadata": { "render": { "color": "#1f8a70", "visible": true } } },
+    { "id": "p6", "label": "链 6", "type": "particle", "properties": { "mass": 1, "radius": 8, "material": "steel" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 8 }, "metadata": { "render": { "color": "#1f8a70", "visible": true } } },
+    { "id": "p7", "label": "链 7", "type": "particle", "properties": { "mass": 1, "radius": 8, "material": "steel" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 8 }, "metadata": { "render": { "color": "#1f8a70", "visible": true } } }
+  ],
+  "interactions": [
+    { "id": "s01", "type": "constraint", "model": "distance", "between": ["p0", "p1"], "parameters": { "value": 46, "compliance": 0 }, "metadata": { "render": { "color": "#7048e8" } } },
+    { "id": "s12", "type": "constraint", "model": "distance", "between": ["p1", "p2"], "parameters": { "value": 46, "compliance": 0 }, "metadata": { "render": { "color": "#7048e8" } } },
+    { "id": "s23", "type": "constraint", "model": "distance", "between": ["p2", "p3"], "parameters": { "value": 46, "compliance": 0 }, "metadata": { "render": { "color": "#7048e8" } } },
+    { "id": "s34", "type": "constraint", "model": "distance", "between": ["p3", "p4"], "parameters": { "value": 46, "compliance": 0 }, "metadata": { "render": { "color": "#7048e8" } } },
+    { "id": "s45", "type": "constraint", "model": "distance", "between": ["p4", "p5"], "parameters": { "value": 46, "compliance": 0 }, "metadata": { "render": { "color": "#7048e8" } } },
+    { "id": "s56", "type": "constraint", "model": "distance", "between": ["p5", "p6"], "parameters": { "value": 46, "compliance": 0 }, "metadata": { "render": { "color": "#7048e8" } } },
+    { "id": "s67", "type": "constraint", "model": "distance", "between": ["p6", "p7"], "parameters": { "value": 46, "compliance": 0 }, "metadata": { "render": { "color": "#7048e8" } } },
+    { "id": "gravity_force", "type": "field", "model": "uniform", "field": "gravity", "applies_to": ["p1", "p2", "p3", "p4", "p5", "p6", "p7"] }
+  ],
+  "fields": [{ "id": "gravity", "model": "uniform", "vector": [0, 90], "metadata": { "render": { "color": "#2f9e44", "pointShape": "circle", "fieldDensity": 0.65, "opacity": 0.45 } } }],
+  "initial_state": {
+    "p0": { "position": [230, 120], "velocity": [0, 0] },
+    "p1": { "position": [276, 120], "velocity": [0, 0] },
+    "p2": { "position": [322, 120], "velocity": [0, 0] },
+    "p3": { "position": [368, 120], "velocity": [0, 0] },
+    "p4": { "position": [414, 120], "velocity": [0, 0] },
+    "p5": { "position": [460, 120], "velocity": [0, 0] },
+    "p6": { "position": [506, 120], "velocity": [0, 0] },
+    "p7": { "position": [552, 120], "velocity": [0, 30] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "energy": true, "constraint_error": true },
+  "timeline": { "terminal_condition": "t >= 6", "keyframes": [{ "t": 0, "state": "initial" }] }
+}

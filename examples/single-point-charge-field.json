@@ -1,0 +1,58 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "m", "time": "s", "mass": "kg", "charge": "C" },
+    "bounds": { "min": [-4, -3], "max": [4, 3] },
+    "constants": {},
+    "gravity": { "vector": [0, 0] }
+  },
+  "objects": [
+    {
+      "id": "source_charge",
+      "label": "固定正电荷 +Q",
+      "type": "rigid_body",
+      "properties": { "mass": 1e10, "inertia": 1e10, "charge": 1, "radius": 0.18, "restitution": 0.3, "friction": 0.3 },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "geometry": { "type": "circle", "radius": 0.18 },
+      "metadata": { "role": "anchor", "render": { "color": "#c92a2a", "visible": true }, "description": "固定正点电荷，产生径向电场" }
+    },
+    {
+      "id": "test_charge",
+      "label": "试探电荷 +q",
+      "type": "particle",
+      "properties": { "mass": 0.5, "charge": 0.3, "radius": 0.1, "restitution": 0.3, "friction": 0.3 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.1 },
+      "metadata": { "role": "dynamic", "render": { "color": "#1f8a70", "visible": true }, "description": "带正电试探粒子，受点电荷电场排斥" }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "coulomb_repulsion",
+      "type": "field",
+      "model": "radial",
+      "field": "point_charge_field",
+      "applies_to": ["test_charge"]
+    }
+  ],
+  "fields": [
+    {
+      "id": "point_charge_field",
+      "model": "radial",
+      "origin": [0, 0],
+      "strength": 12,
+      "metadata": {
+        "tags": ["electric", "charge"],
+        "description": "点电荷径向电场 E = kQ/r²，力 F = qE",
+        "render": { "color": "#c92a2a", "pointShape": "diamond", "fieldDensity": 1.6, "opacity": 0.55 }
+      }
+    }
+  ],
+  "initial_state": {
+    "source_charge": { "position": [0, 0], "velocity": [0, 0] },
+    "test_charge": { "position": [2.5, 0.8], "velocity": [0, 2.5] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "acceleration": true, "energy": true, "power": true, "work": true },
+  "timeline": { "keyframes": [{ "t": 0, "state": "initial" }], "terminal_condition": "t >= 8" }
+}

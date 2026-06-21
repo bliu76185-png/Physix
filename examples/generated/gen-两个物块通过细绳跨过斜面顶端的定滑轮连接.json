@@ -1,0 +1,426 @@
+{
+  "_title": "两个物块通过细绳跨过斜面顶端的定滑轮连接",
+  "_prompt": "两个物块通过细绳跨过斜面顶端的定滑轮连接",
+  "_generatedAt": "2026-06-21T16:50:29.726Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "bounds": {
+      "min": [
+        -4,
+        -2
+      ],
+      "max": [
+        4,
+        4
+      ]
+    },
+    "gravity": {
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "ground",
+      "label": "Ground",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "friction": 0.5,
+        "restitution": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          100,
+          0.4
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#6c757d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "incline",
+      "label": "Inclined Plane",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "friction": 0,
+        "restitution": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "polygon",
+        "points": [
+          [
+            -2,
+            -1.1545
+          ],
+          [
+            2,
+            1.1545
+          ],
+          [
+            2,
+            -1.1545
+          ]
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#868e96",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "blockA",
+      "label": "Block on Incline",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.15,
+        "friction": 0,
+        "restitution": 0
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#1f8a70",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "blockB",
+      "label": "Hanging Block",
+      "type": "particle",
+      "properties": {
+        "mass": 2,
+        "radius": 0.15,
+        "friction": 0,
+        "restitution": 0
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#d62828",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "pulley",
+      "label": "Fixed Pulley",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "friction": 0,
+        "restitution": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.1
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#495057",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "gravity_on_A",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "blockA"
+      ]
+    },
+    {
+      "id": "gravity_on_B",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "blockB"
+      ]
+    },
+    {
+      "id": "string_connection",
+      "type": "constraint",
+      "model": "distance",
+      "between": [
+        "blockA",
+        "blockB"
+      ],
+      "parameters": {
+        "value": 3,
+        "compliance": 0.000001
+      },
+      "metadata": {
+        "priority": 1,
+        "lambda_max": 2000,
+        "tags": [
+          "rope",
+          "unilateral"
+        ],
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "contact_A_incline",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "blockA",
+        "incline"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0,
+        "friction": 0
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "contact_A_pulley",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "blockA",
+        "pulley"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0,
+        "friction": 0
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "contact_B_pulley",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "blockB",
+        "pulley"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0,
+        "friction": 0
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "contact_B_ground",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "blockB",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0,
+        "friction": 0.5
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  ],
+  "initial_state": {
+    "ground": {
+      "position": [
+        0,
+        -1.5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "incline": {
+      "position": [
+        0,
+        1.1545
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "blockA": {
+      "position": [
+        0.268,
+        1.309
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "blockB": {
+      "position": [
+        2,
+        1.309
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "pulley": {
+      "position": [
+        2,
+        2.309
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "power": true,
+    "work": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 10",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

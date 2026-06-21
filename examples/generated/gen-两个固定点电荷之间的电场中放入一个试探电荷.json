@@ -1,0 +1,233 @@
+{
+  "_title": "两个固定点电荷之间的电场中放入一个试探电荷",
+  "_prompt": "两个固定点电荷之间的电场中放入一个试探电荷",
+  "_generatedAt": "2026-06-21T16:55:17.095Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "bounds": {
+      "min": [
+        -4,
+        -4
+      ],
+      "max": [
+        4,
+        4
+      ]
+    },
+    "gravity": {
+      "vector": [
+        0,
+        0
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "charge_A",
+      "label": "固定正电荷A",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "radius": 0.15,
+        "charge": 0.00001,
+        "restitution": 1,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#e74c3c",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "charge_B",
+      "label": "固定负电荷B",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "radius": 0.15,
+        "charge": -0.00001,
+        "restitution": 1,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#3498db",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "test_charge",
+      "label": "试探电荷",
+      "type": "particle",
+      "properties": {
+        "mass": 0.001,
+        "radius": 0.1,
+        "charge": 0.000001,
+        "restitution": 1,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.1
+      },
+      "metadata": {
+        "role": "dynamic",
+        "fixed": false,
+        "render": {
+          "color": "#f1c40f",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "field_A_interaction",
+      "type": "field",
+      "model": "radial",
+      "field": "E_field_A",
+      "applies_to": [
+        "test_charge"
+      ]
+    },
+    {
+      "id": "field_B_interaction",
+      "type": "field",
+      "model": "radial",
+      "field": "E_field_B",
+      "applies_to": [
+        "test_charge"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "E_field_A",
+      "model": "radial",
+      "origin": [
+        -1,
+        0
+      ],
+      "strength": 89900,
+      "metadata": {
+        "tags": [
+          "electric",
+          "charge"
+        ],
+        "description": "点电荷A产生的电场"
+      }
+    },
+    {
+      "id": "E_field_B",
+      "model": "radial",
+      "origin": [
+        1,
+        0
+      ],
+      "strength": -89900,
+      "metadata": {
+        "tags": [
+          "electric",
+          "charge"
+        ],
+        "description": "点电荷B产生的电场"
+      }
+    }
+  ],
+  "initial_state": {
+    "charge_A": {
+      "position": [
+        -1,
+        0
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "charge_B": {
+      "position": [
+        1,
+        0
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "test_charge": {
+      "position": [
+        0,
+        1
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "power": true,
+    "work": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 5",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

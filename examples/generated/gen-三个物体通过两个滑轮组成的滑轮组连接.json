@@ -1,0 +1,423 @@
+{
+  "_title": "三个物体通过两个滑轮组成的滑轮组连接",
+  "_prompt": "三个物体通过两个滑轮组成的滑轮组连接",
+  "_generatedAt": "2026-06-21T16:57:27.618Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "bounds": {
+      "min": [
+        -4,
+        -2
+      ],
+      "max": [
+        4,
+        3
+      ]
+    },
+    "gravity": {
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "A",
+      "label": "Block A on table",
+      "type": "particle",
+      "properties": {
+        "mass": 2,
+        "radius": 0.15,
+        "restitution": 0.5,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#e74c3c",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "B",
+      "label": "Hanging mass B (left)",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.15,
+        "restitution": 0.5,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#3498db",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "C",
+      "label": "Hanging mass C (right)",
+      "type": "particle",
+      "properties": {
+        "mass": 3,
+        "radius": 0.15,
+        "restitution": 0.5,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#2ecc71",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "left_pulley",
+      "label": "Left fixed pulley",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "radius": 0.2,
+        "restitution": 0.5,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.2
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "right_pulley",
+      "label": "Right fixed pulley",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "radius": 0.2,
+        "restitution": 0.5,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.2
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "table",
+      "label": "Frictionless table surface",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "restitution": 0,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          8,
+          0.2
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#bdc3c7",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        -9.81
+      ],
+      "metadata": {
+        "tags": [
+          "gravity"
+        ],
+        "description": "Standard gravity"
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "gravity_on_all",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "id": "left_pulley_joint",
+      "type": "constraint",
+      "model": "pulley",
+      "between": [
+        "A",
+        "B"
+      ],
+      "parameters": {
+        "ground_anchor_a": [
+          -2,
+          0.5
+        ],
+        "ground_anchor_b": [
+          -2,
+          0.5
+        ],
+        "length_a": 2.022,
+        "length_b": 1.5,
+        "ratio": 1,
+        "compliance": 0.000001
+      },
+      "metadata": {
+        "priority": 1,
+        "lambda_max": 2000,
+        "tags": [
+          "pulley",
+          "left"
+        ],
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "right_pulley_joint",
+      "type": "constraint",
+      "model": "pulley",
+      "between": [
+        "A",
+        "C"
+      ],
+      "parameters": {
+        "ground_anchor_a": [
+          2,
+          0.5
+        ],
+        "ground_anchor_b": [
+          2,
+          0.5
+        ],
+        "length_a": 2.022,
+        "length_b": 1,
+        "ratio": 1,
+        "compliance": 0.000001
+      },
+      "metadata": {
+        "priority": 1,
+        "lambda_max": 2000,
+        "tags": [
+          "pulley",
+          "right"
+        ],
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "A_table_contact",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "A",
+        "table"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0,
+        "friction": 0
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 981,
+        "tags": [
+          "contact",
+          "table"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "initial_state": {
+    "A": {
+      "position": [
+        0,
+        0.2
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "B": {
+      "position": [
+        -2,
+        -1
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "C": {
+      "position": [
+        2,
+        -0.5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "left_pulley": {
+      "position": [
+        -2,
+        0.5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "right_pulley": {
+      "position": [
+        2,
+        0.5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "table": {
+      "position": [
+        0,
+        0
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "power": true,
+    "work": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 5",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

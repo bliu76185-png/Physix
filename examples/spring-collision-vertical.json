@@ -1,0 +1,128 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "m", "time": "s", "mass": "kg", "angle": "rad" },
+    "bounds": { "min": [-3, -2], "max": [3, 5] },
+    "gravity": { "vector": [0, -9.81] }
+  },
+  "variables": [
+    {
+      "id": "restitution",
+      "label": "恢复系数 e",
+      "unit": "",
+      "min": 0,
+      "max": 1,
+      "step": 0.05,
+      "default": 0.7,
+      "bindings": [
+        { "path": "interactions[id=contact_ab].parameters.restitution" }
+      ],
+      "metadata": { "description": "A↔B 碰撞恢复系数。0=完全非弹性，1=完全弹性。仅影响A和B之间的碰撞。" }
+    },
+    {
+      "id": "spring_k",
+      "label": "弹簧刚度 k",
+      "unit": "N/m",
+      "min": 20,
+      "max": 500,
+      "step": 10,
+      "default": 100,
+      "bindings": [
+        { "path": "interactions[id=spring_a].parameters.stiffness" },
+        { "path": "interactions[id=spring_a].parameters.compliance" }
+      ],
+      "metadata": { "description": "弹簧刚度，改变平衡位置与振动频率。" }
+    }
+  ],
+  "objects": [
+    {
+      "id": "anchor",
+      "label": "固定悬挂点",
+      "type": "rigid_body",
+      "properties": { "mass": 1e10, "inertia": 1e10, "radius": 0.08, "restitution": 0.3, "friction": 0.5 },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "geometry": { "type": "circle", "radius": 0.08 },
+      "metadata": { "role": "anchor", "fixed": true, "render": { "color": "#495057", "visible": true }, "description": "弹簧上端固定在天花板" }
+    },
+    {
+      "id": "slider_a",
+      "label": "滑块A",
+      "type": "particle",
+      "properties": { "mass": 1.0, "radius": 0.18, "restitution": 0.7, "friction": 0.3 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.18 },
+      "metadata": { "role": "dynamic", "render": { "color": "#1f8a70", "visible": true }, "description": "连接弹簧，在平衡位置静止。平衡位置 = 3 - 0.5 - 1×9.81/100 ≈ 2.4m" }
+    },
+    {
+      "id": "slider_b",
+      "label": "滑块B",
+      "type": "particle",
+      "properties": { "mass": 0.5, "radius": 0.14, "restitution": 0.7, "friction": 0.3 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.14 },
+      "metadata": { "role": "dynamic", "render": { "color": "#2c7be5", "visible": true }, "description": "在A上方1m处静止释放，自由下落撞击A" }
+    },
+    {
+      "id": "ground",
+      "label": "地面",
+      "type": "rigid_body",
+      "properties": { "mass": 1e10, "inertia": 1e10, "restitution": 0.3, "friction": 0.5 },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "geometry": { "type": "box", "size": [6, 0.4] },
+      "metadata": { "role": "anchor", "fixed": true, "render": { "color": "#6c757d", "visible": true } }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "spring_a",
+      "type": "constraint",
+      "model": "spring",
+      "between": ["anchor", "slider_a"],
+      "parameters": { "rest_length": 0.5, "stiffness": 100, "damping": 0.6, "compliance": 0.01 },
+      "metadata": { "priority": 5, "lambda_max": 2000, "tags": ["spring"], "description": "A通过弹簧悬挂在固定点" }
+    },
+    { "id": "gravity_a", "type": "field", "model": "uniform", "field": "g_field", "applies_to": ["slider_a"] },
+    { "id": "gravity_b", "type": "field", "model": "uniform", "field": "g_field", "applies_to": ["slider_b"] },
+    {
+      "id": "contact_ab",
+      "type": "constraint",
+      "model": "inequality",
+      "between": ["slider_a", "slider_b"],
+      "parameters": { "condition": "contact", "compliance": 0.000001, "restitution": 1 },
+      "metadata": { "priority": 2, "lambda_max": 2000, "description": "A↔B碰撞接触（弹性可调）" }
+    },
+    {
+      "id": "contact_a_floor",
+      "type": "constraint",
+      "model": "inequality",
+      "between": ["slider_a", "ground"],
+      "parameters": { "condition": "contact", "compliance": 0.000001 },
+      "metadata": { "priority": 2, "lambda_max": 2000 }
+    },
+    {
+      "id": "contact_b_floor",
+      "type": "constraint",
+      "model": "inequality",
+      "between": ["slider_b", "ground"],
+      "parameters": { "condition": "contact", "compliance": 0.000001 },
+      "metadata": { "priority": 2, "lambda_max": 2000 }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [0, -9.81],
+      "metadata": { "description": "重力场", "render": { "color": "#2f9e44", "pointShape": "circle", "fieldDensity": 0.8, "opacity": 0.5 } }
+    }
+  ],
+  "initial_state": {
+    "anchor": { "position": [0, 3], "velocity": [0, 0] },
+    "slider_a": { "position": [0, 2.4], "velocity": [0, 0] },
+    "slider_b": { "position": [0, 3.4], "velocity": [0, 0] },
+    "ground": { "position": [0, -1.2], "velocity": [0, 0] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "acceleration": true, "energy": true, "power": true, "work": true },
+  "timeline": { "keyframes": [{ "t": 0, "state": "initial" }], "terminal_condition": "t >= 8" }
+}

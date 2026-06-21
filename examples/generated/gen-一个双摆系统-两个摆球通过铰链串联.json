@@ -1,0 +1,372 @@
+{
+  "_title": "一个双摆系统，两个摆球通过铰链串联",
+  "_prompt": "一个双摆系统，两个摆球通过铰链串联",
+  "_generatedAt": "2026-06-21T16:48:34.444Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "bounds": {
+      "min": [
+        -3,
+        -1
+      ],
+      "max": [
+        5,
+        4.5
+      ]
+    },
+    "gravity": {
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "anchor",
+      "label": "固定支点",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "restitution": 0.5,
+        "friction": 0.5
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          0.3,
+          0.3
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#555555",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "bob1",
+      "label": "上摆球",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.12,
+        "restitution": 1,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.12
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#e74c3c",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "bob2",
+      "label": "下摆球",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.12,
+        "restitution": 1,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.12
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#3498db",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground",
+      "label": "地面",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "restitution": 0.5,
+        "friction": 0.5
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          100,
+          0.4
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#8B4513",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "gravity_on_bobs",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "bob1",
+        "bob2"
+      ]
+    },
+    {
+      "id": "rope_upper",
+      "type": "constraint",
+      "model": "distance",
+      "between": [
+        "anchor",
+        "bob1"
+      ],
+      "parameters": {
+        "value": 1.5,
+        "compliance": 0.001
+      },
+      "metadata": {
+        "priority": 5,
+        "lambda_max": 2000,
+        "tags": [
+          "rope",
+          "unilateral"
+        ],
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "rope_lower",
+      "type": "constraint",
+      "model": "distance",
+      "between": [
+        "bob1",
+        "bob2"
+      ],
+      "parameters": {
+        "value": 1.5,
+        "compliance": 0.001
+      },
+      "metadata": {
+        "priority": 5,
+        "lambda_max": 2000,
+        "tags": [
+          "rope",
+          "unilateral"
+        ],
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "bob_collision",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "bob1",
+        "bob2"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 1,
+        "friction": 0.3
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground_collision_bob1",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "bob1",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0.5,
+        "friction": 0.5
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground_collision_bob2",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "bob2",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0.5,
+        "friction": 0.5
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        -9.81
+      ],
+      "metadata": {
+        "tags": [
+          "gravity"
+        ],
+        "description": "重力场"
+      }
+    }
+  ],
+  "initial_state": {
+    "anchor": {
+      "position": [
+        0,
+        3.5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "bob1": {
+      "position": [
+        0.75,
+        2.201
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "bob2": {
+      "position": [
+        1.811,
+        1.14
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "ground": {
+      "position": [
+        0,
+        -0.5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "power": true,
+    "work": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 5.0",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

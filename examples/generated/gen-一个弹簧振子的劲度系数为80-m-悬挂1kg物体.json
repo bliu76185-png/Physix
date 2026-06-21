@@ -1,0 +1,252 @@
+{
+  "_title": "一个弹簧振子的劲度系数为80N/m，悬挂1kg物体",
+  "_prompt": "一个弹簧振子的劲度系数为80N/m，悬挂1kg物体",
+  "_generatedAt": "2026-06-21T16:46:40.058Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "bounds": {
+      "min": [
+        -4,
+        -2
+      ],
+      "max": [
+        4,
+        4
+      ]
+    },
+    "gravity": {
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "anchor",
+      "label": "Ceiling anchor",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "restitution": 0.5,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          0.3,
+          0.3
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#6c757d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "mass",
+      "label": "Suspended mass",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.15,
+        "restitution": 0.5,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": true
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#1f8a70",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground",
+      "label": "Ground floor",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "restitution": 0.5,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          100,
+          0.4
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#6c757d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "gravity_on_mass",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "mass"
+      ]
+    },
+    {
+      "id": "spring_connection",
+      "type": "constraint",
+      "model": "spring",
+      "between": [
+        "anchor",
+        "mass"
+      ],
+      "parameters": {
+        "rest_length": 0.5,
+        "stiffness": 80,
+        "damping": 0.6,
+        "compliance": 0.000001,
+        "value": 0.5
+      },
+      "metadata": {
+        "priority": 5,
+        "lambda_max": 2000,
+        "tags": [
+          "spring"
+        ],
+        "description": "spring tension / elastic force",
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground_contact",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "mass",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0.5,
+        "friction": 0.3
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  ],
+  "initial_state": {
+    "anchor": {
+      "position": [
+        0,
+        3
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "mass": {
+      "position": [
+        0,
+        2.377375
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "ground": {
+      "position": [
+        0,
+        -1.5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "power": true,
+    "work": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 10",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

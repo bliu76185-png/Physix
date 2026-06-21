@@ -1,0 +1,404 @@
+{
+  "_title": "三个小球在光滑水平面上排成一线，最左端小球撞击中间小球",
+  "_prompt": "三个小球在光滑水平面上排成一线，最左端小球撞击中间小球",
+  "_generatedAt": "2026-06-21T16:47:14.335Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "bounds": {
+      "min": [
+        -2,
+        -1
+      ],
+      "max": [
+        2,
+        1
+      ]
+    },
+    "gravity": {
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "ball_A",
+      "label": "Left ball",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.15,
+        "restitution": 1,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#e74c3c",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ball_B",
+      "label": "Middle ball",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.15,
+        "restitution": 1,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#3498db",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ball_C",
+      "label": "Right ball",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.15,
+        "restitution": 1,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#2ecc71",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground",
+      "label": "Ground plane",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "restitution": 0.5,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          100,
+          0.2
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#6c757d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "gravity_on_A",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "ball_A"
+      ]
+    },
+    {
+      "id": "gravity_on_B",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "ball_B"
+      ]
+    },
+    {
+      "id": "gravity_on_C",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "ball_C"
+      ]
+    },
+    {
+      "id": "collision_AB",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "ball_A",
+        "ball_B"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 1,
+        "friction": 0
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "collision"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "collision_BC",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "ball_B",
+        "ball_C"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 1,
+        "friction": 0
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "collision"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground_contact_A",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "ball_A",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0.5,
+        "friction": 0.3
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "contact"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground_contact_B",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "ball_B",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0.5,
+        "friction": 0.3
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "contact"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground_contact_C",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "ball_C",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0.5,
+        "friction": 0.3
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "contact"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        -9.81
+      ],
+      "metadata": {
+        "tags": [
+          "gravity"
+        ],
+        "description": "Uniform gravity field"
+      }
+    }
+  ],
+  "initial_state": {
+    "ball_A": {
+      "position": [
+        -0.5,
+        0
+      ],
+      "velocity": [
+        1,
+        0
+      ]
+    },
+    "ball_B": {
+      "position": [
+        0,
+        0
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "ball_C": {
+      "position": [
+        0.5,
+        0
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "ground": {
+      "position": [
+        0,
+        -0.5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "power": false,
+    "work": false,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 2.0",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

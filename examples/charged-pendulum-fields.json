@@ -1,0 +1,88 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "px", "time": "s", "mass": "kg", "charge": "C" },
+    "scale": 1,
+    "bounds": { "min": [0, 0], "max": [640, 480] },
+    "constants": {}
+  },
+  "objects": [
+    {
+      "id": "pivot",
+      "label": "单摆固定点",
+      "type": "rigid_body",
+      "properties": { "mass": 1000000, "inertia": 1000000, "radius": 6, "material": "steel" },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "geometry": { "type": "circle", "radius": 6 },
+      "metadata": { "fixed": true, "render": { "color": "#2f3a4a", "visible": true, "debug": false } }
+    },
+    {
+      "id": "charged_ball",
+      "label": "带电小球",
+      "type": "particle",
+      "properties": { "mass": 1, "charge": 2, "radius": 14, "material": "rubber" },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 14 },
+      "metadata": { "render": { "color": "#b84a62", "visible": true, "debug": true } }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "rod_constraint",
+      "type": "constraint",
+      "model": "distance",
+      "between": ["pivot", "charged_ball"],
+      "parameters": { "value": 120, "compliance": 0 },
+      "metadata": { "description": "Pendulum rod represented by a hard distance constraint." }
+    },
+    {
+      "id": "gravity_force",
+      "type": "field",
+      "model": "uniform",
+      "field": "gravity",
+      "applies_to": ["charged_ball"]
+    },
+    {
+      "id": "electric_force",
+      "type": "field",
+      "model": "uniform",
+      "field": "electric_field",
+      "applies_to": ["charged_ball"]
+    }
+  ],
+  "fields": [
+    {
+      "id": "gravity",
+      "model": "uniform",
+      "vector": [0, 120],
+      "metadata": { "render": { "color": "#2f9e44", "pointShape": "circle", "fieldDensity": 0.8, "opacity": 0.5 } }
+    },
+    {
+      "id": "electric_field",
+      "model": "uniform",
+      "vector": [80, 0],
+      "metadata": {
+        "tags": ["electric"],
+        "description": "Uniform electric field. Force is qE.",
+        "render": { "color": "#c92a2a", "pointShape": "diamond", "fieldDensity": 1.4, "opacity": 0.62 }
+      }
+    }
+  ],
+  "initial_state": {
+    "pivot": { "position": [320, 100], "velocity": [0, 0] },
+    "charged_ball": { "position": [440, 100], "velocity": [0, 0] }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "energy": true,
+    "constraint_error": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 4",
+    "keyframes": [
+      { "t": 0, "state": "initial" }
+    ]
+  }
+}

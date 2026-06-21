@@ -1,0 +1,24 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "px", "time": "s", "mass": "kg" },
+    "scale": 1,
+    "bounds": { "min": [0, 0], "max": [720, 560] },
+    "constants": {}
+  },
+  "objects": [
+    { "id": "anchor", "label": "高刚度锚点", "type": "particle", "properties": { "mass": 1000000, "radius": 8, "material": "steel" }, "degrees_of_freedom": { "translation": false }, "geometry": { "type": "circle", "radius": 8 }, "metadata": { "fixed": true, "render": { "color": "#555", "visible": true } } },
+    { "id": "mass", "label": "高刚度质点", "type": "particle", "properties": { "mass": 1, "radius": 16, "material": "steel" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 16 }, "metadata": { "render": { "color": "#d9480f", "visible": true } } }
+  ],
+  "interactions": [
+    { "id": "stiff_spring", "type": "constraint", "model": "distance", "between": ["anchor", "mass"], "parameters": { "value": 130, "compliance": 0.00001 }, "metadata": { "render": { "color": "#d9480f" }, "description": "Nearly rigid stiff spring." } }
+  ],
+  "fields": [],
+  "initial_state": {
+    "anchor": { "position": [300, 260], "velocity": [0, 0] },
+    "mass": { "position": [460, 260], "velocity": [0, -80] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "energy": true, "constraint_error": true },
+  "timeline": { "terminal_condition": "t >= 5", "keyframes": [{ "t": 0, "state": "initial" }] }
+}

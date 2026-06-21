@@ -1,0 +1,168 @@
+{
+  "_title": "一个电子在匀强磁场中以一定角度入射做螺旋运动",
+  "_prompt": "一个电子在匀强磁场中以一定角度入射做螺旋运动",
+  "_generatedAt": "2026-06-21T16:57:54.591Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "bounds": {
+      "min": [
+        -5,
+        -5
+      ],
+      "max": [
+        5,
+        10
+      ]
+    },
+    "gravity": {
+      "vector": [
+        0,
+        0
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "e1",
+      "label": "电子",
+      "type": "particle",
+      "properties": {
+        "mass": 9.11e-31,
+        "radius": 0.15,
+        "charge": -1.6e-19,
+        "restitution": 1,
+        "friction": 0,
+        "linear_damping": 0
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#007bff",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "b_source",
+      "label": "磁场区域",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "restitution": 0,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          10,
+          15
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#e9ecef",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "variables": [],
+  "motion_profiles": [],
+  "interactions": [
+    {
+      "id": "b_field_coupling",
+      "type": "field",
+      "model": "uniform",
+      "field": "b_field",
+      "applies_to": [
+        "e1"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "b_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        0,
+        1
+      ],
+      "metadata": {
+        "tags": [
+          "magnetic"
+        ],
+        "description": "匀强磁场"
+      }
+    }
+  ],
+  "initial_state": {
+    "e1": {
+      "position": [
+        0,
+        0
+      ],
+      "velocity": [
+        0,
+        2000000
+      ]
+    },
+    "b_source": {
+      "position": [
+        0,
+        5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "power": true,
+    "work": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 5.0e-6",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

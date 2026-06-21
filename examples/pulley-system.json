@@ -1,0 +1,67 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "m", "time": "s", "mass": "kg" },
+    "bounds": { "min": [-3, -4], "max": [3, 4] },
+    "constants": { "g": 9.8 },
+    "gravity": { "vector": [0, -9.8] }
+  },
+  "objects": [
+    {
+      "id": "mass_a",
+      "label": "重物A (3kg)",
+      "type": "particle",
+      "properties": { "mass": 3, "radius": 0.3, "friction": 0.3, "restitution": 0.3 },
+      "degrees_of_freedom": { "translation": true, "rotation": false },
+      "geometry": { "type": "circle", "radius": 0.3 },
+      "metadata": { "role": "dynamic", "description": "左侧重物", "priority": 1, "lambda_max": 1000 }
+    },
+    {
+      "id": "mass_b",
+      "label": "重物B (1kg)",
+      "type": "particle",
+      "properties": { "mass": 1, "radius": 0.2, "friction": 0.3, "restitution": 0.3 },
+      "degrees_of_freedom": { "translation": true, "rotation": false },
+      "geometry": { "type": "circle", "radius": 0.2 },
+      "metadata": { "role": "dynamic", "description": "右侧重物", "priority": 1, "lambda_max": 1000 }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "pulley_rope",
+      "type": "constraint",
+      "model": "pulley",
+      "between": ["mass_a", "mass_b"],
+      "parameters": {
+        "ground_anchor_a": [-1, 2.5],
+        "ground_anchor_b": [1, 2.5],
+        "length_a": 2.5,
+        "length_b": 2.5,
+        "ratio": 1,
+        "compliance": 1e-6
+      },
+      "metadata": { "priority": 1, "lambda_max": 1000, "description": "滑轮绳索约束" }
+    },
+    {
+      "id": "gravity_field",
+      "type": "field",
+      "model": "uniform",
+      "field": "gravity"
+    }
+  ],
+  "fields": [
+    {
+      "id": "gravity",
+      "model": "uniform",
+      "vector": [0, -9.8],
+      "metadata": { "description": "重力" }
+    }
+  ],
+  "initial_state": {
+    "mass_a": { "position": [-1, 0], "velocity": [0, 0] },
+    "mass_b": { "position": [1, 0], "velocity": [0, 0] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "acceleration": true, "energy": true, "power": true, "work": true },
+  "timeline": { "keyframes": [{ "t": 0, "state": "initial" }], "terminal_condition": "t >= 5" }
+}

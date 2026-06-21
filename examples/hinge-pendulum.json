@@ -1,0 +1,63 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "m", "time": "s", "mass": "kg" },
+    "bounds": { "min": [-3, -2], "max": [3, 4] },
+    "constants": { "g": 9.8 },
+    "gravity": { "vector": [0, -9.8] }
+  },
+  "objects": [
+    {
+      "id": "pivot",
+      "label": "铰链支点",
+      "type": "particle",
+      "properties": { "mass": 1, "radius": 0.1, "friction": 0.3, "restitution": 0.3 },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "geometry": { "type": "circle", "radius": 0.15 },
+      "metadata": { "role": "anchor", "description": "固定铰链支点", "priority": 1, "lambda_max": 1000 }
+    },
+    {
+      "id": "pendulum_ball",
+      "label": "摆球",
+      "type": "particle",
+      "properties": { "mass": 1, "radius": 0.25, "friction": 0.3, "restitution": 0.3 },
+      "degrees_of_freedom": { "translation": true, "rotation": false },
+      "geometry": { "type": "circle", "radius": 0.25 },
+      "metadata": { "role": "dynamic", "description": "铰链连接的摆球", "priority": 1, "lambda_max": 1000 }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "hinge_connection",
+      "type": "constraint",
+      "model": "hinge",
+      "between": ["pivot", "pendulum_ball"],
+      "parameters": {
+        "anchor": [0, 2],
+        "compliance": 1e-6
+      },
+      "metadata": { "priority": 1, "lambda_max": 1000, "description": "铰链连接" }
+    },
+    {
+      "id": "gravity_field",
+      "type": "field",
+      "model": "uniform",
+      "field": "gravity"
+    }
+  ],
+  "fields": [
+    {
+      "id": "gravity",
+      "model": "uniform",
+      "vector": [0, -9.8],
+      "metadata": { "description": "重力" }
+    }
+  ],
+  "initial_state": {
+    "pivot": { "position": [0, 2], "velocity": [0, 0] },
+    "pendulum_ball": { "position": [1.5, 2], "velocity": [0, 0] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "acceleration": true, "energy": true, "power": true, "work": true },
+  "timeline": { "keyframes": [{ "t": 0, "state": "initial" }], "terminal_condition": "t >= 6" }
+}

@@ -1,0 +1,78 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "m", "time": "s", "mass": "kg", "charge": "C" },
+    "bounds": { "min": [-4, -3], "max": [4, 3] },
+    "constants": {},
+    "gravity": { "vector": [0, 0] }
+  },
+  "objects": [
+    {
+      "id": "charge_a",
+      "label": "电荷A (+q)",
+      "type": "particle",
+      "properties": { "mass": 0.3, "charge": 1, "radius": 0.14, "restitution": 0.6, "friction": 0 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.14 },
+      "metadata": { "role": "dynamic", "render": { "color": "#c92a2a", "visible": true }, "description": "可移动正电荷A，产生径向电场" }
+    },
+    {
+      "id": "charge_b",
+      "label": "电荷B (+q)",
+      "type": "particle",
+      "properties": { "mass": 0.3, "charge": 1, "radius": 0.14, "restitution": 0.6, "friction": 0 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.14 },
+      "metadata": { "role": "dynamic", "render": { "color": "#2c7be5", "visible": true }, "description": "可移动正电荷B，产生径向电场" }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "coulomb_a_on_b",
+      "type": "field",
+      "model": "radial",
+      "field": "field_from_a",
+      "applies_to": ["charge_b"]
+    },
+    {
+      "id": "coulomb_b_on_a",
+      "type": "field",
+      "model": "radial",
+      "field": "field_from_b",
+      "applies_to": ["charge_a"]
+    }
+  ],
+  "fields": [
+    {
+      "id": "field_from_a",
+      "model": "radial",
+      "origin": [0, 0],
+      "origin_from": "charge_a",
+      "strength": 15,
+      "metadata": {
+        "tags": ["electric", "charge"],
+        "description": "电荷A电场（原点绑定到 charge_a 位置）",
+        "render": { "color": "#c92a2a", "pointShape": "diamond", "fieldDensity": 1.2, "opacity": 0.45 }
+      }
+    },
+    {
+      "id": "field_from_b",
+      "model": "radial",
+      "origin": [0, 0],
+      "origin_from": "charge_b",
+      "strength": 15,
+      "metadata": {
+        "tags": ["electric", "charge"],
+        "description": "电荷B电场（原点绑定到 charge_b 位置）",
+        "render": { "color": "#2c7be5", "pointShape": "diamond", "fieldDensity": 1.2, "opacity": 0.45 }
+      }
+    }
+  ],
+  "initial_state": {
+    "charge_a": { "position": [-2, 0.3], "velocity": [0.5, 0.2] },
+    "charge_b": { "position": [2, -0.3], "velocity": [-0.5, -0.2] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "acceleration": true, "energy": true, "power": true, "work": true },
+  "timeline": { "keyframes": [{ "t": 0, "state": "initial" }], "terminal_condition": "t >= 8" }
+}

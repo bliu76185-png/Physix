@@ -1,0 +1,58 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "m", "time": "s", "mass": "kg" },
+    "bounds": { "min": [-4, -2], "max": [4, 6] },
+    "constants": { "g": 9.8 },
+    "gravity": { "vector": [0, -9.8] }
+  },
+  "objects": [
+    {
+      "id": "particle",
+      "label": "受变力粒子",
+      "type": "particle",
+      "properties": { "mass": 1, "radius": 0.2, "friction": 0.3, "restitution": 0.8 },
+      "degrees_of_freedom": { "translation": true, "rotation": false },
+      "geometry": { "type": "circle", "radius": 0.2 },
+      "metadata": { "role": "dynamic", "description": "受到时变力场作用的粒子", "priority": 1, "lambda_max": 1000 }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "uniform_gravity",
+      "type": "field",
+      "model": "uniform",
+      "field": "gravity"
+    },
+    {
+      "id": "varying_force",
+      "type": "field",
+      "model": "uniform",
+      "field": "vertical_wind"
+    }
+  ],
+  "fields": [
+    {
+      "id": "gravity",
+      "model": "uniform",
+      "vector": [0, -9.8],
+      "metadata": { "description": "恒定重力" }
+    },
+    {
+      "id": "vertical_wind",
+      "model": "uniform",
+      "vector": [0, 15],
+      "variation": {
+        "temporal": "sin(t*2)",
+        "spatial": "1"
+      },
+      "metadata": { "description": "时变垂直力场 (正弦变化)" }
+    }
+  ],
+  "initial_state": {
+    "particle": { "position": [0, 3], "velocity": [2, 0] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "acceleration": true, "energy": true, "power": true, "work": true },
+  "timeline": { "keyframes": [{ "t": 0, "state": "initial" }], "terminal_condition": "t >= 6" }
+}

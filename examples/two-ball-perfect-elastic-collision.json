@@ -1,0 +1,75 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "m", "time": "s", "mass": "kg", "angle": "rad" },
+    "scale": 100,
+    "bounds": { "min": [-3.6, -2.8], "max": [3.6, 2.8] },
+    "constants": {},
+    "gravity": { "vector": [0, 0] }
+  },
+  "variables": [
+    {
+      "id": "restitution",
+      "label": "恢复系数 e",
+      "unit": "",
+      "min": 0,
+      "max": 1,
+      "step": 0.05,
+      "default": 1,
+      "bindings": [
+        { "path": "interactions[id=ball_contact].parameters.restitution" }
+      ],
+      "metadata": { "description": "拖动滑条调整两球之间的碰撞弹性。0=完全非弹性，1=完全弹性。仅影响两球碰撞。" }
+    }
+  ],
+  "objects": [
+    {
+      "id": "left_ball",
+      "label": "左球 e=1",
+      "type": "particle",
+      "properties": { "mass": 1, "radius": 0.22, "material": "ideal_elastic", "restitution": 1, "friction": 0 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.22 },
+      "metadata": { "role": "dynamic", "render": { "color": "#1f8a70", "visible": true, "debug": true } }
+    },
+    {
+      "id": "right_ball",
+      "label": "右球 e=1",
+      "type": "particle",
+      "properties": { "mass": 1, "radius": 0.22, "material": "ideal_elastic", "restitution": 1, "friction": 0 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.22 },
+      "metadata": { "role": "dynamic", "render": { "color": "#2c7be5", "visible": true, "debug": true } }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "ball_contact",
+      "type": "constraint",
+      "model": "inequality",
+      "between": ["left_ball", "right_ball"],
+      "parameters": { "condition": "distance(left_ball,right_ball) >= radius_sum", "compliance": 0.000001, "restitution": 1 },
+      "metadata": { "priority": 2, "lambda_max": 1000 }
+    }
+  ],
+  "fields": [],
+  "initial_state": {
+    "left_ball": { "position": [-1.4, 0], "velocity": [1.6, 0] },
+    "right_ball": { "position": [1.4, 0], "velocity": [0, 0] }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "momentum": true,
+    "energy": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 4",
+    "keyframes": [
+      { "t": 0, "state": "initial" }
+    ]
+  }
+}

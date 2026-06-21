@@ -1,0 +1,42 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "px", "time": "s", "mass": "kg" },
+    "scale": 1,
+    "bounds": { "min": [0, 0], "max": [720, 560] },
+    "constants": {}
+  },
+  "objects": [
+    { "id": "anchor", "label": "事件锚点", "type": "particle", "properties": { "mass": 1000000, "radius": 8, "material": "steel" }, "degrees_of_freedom": { "translation": false }, "geometry": { "type": "circle", "radius": 8 }, "metadata": { "fixed": true, "render": { "color": "#555", "visible": true } } },
+    { "id": "bob", "label": "拓扑切换小球", "type": "particle", "properties": { "mass": 1, "radius": 14, "material": "rubber" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 14 }, "metadata": { "render": { "color": "#b84a62", "visible": true } } },
+    { "id": "guide", "label": "重连参考点", "type": "particle", "properties": { "mass": 1000000, "radius": 6, "material": "steel" }, "degrees_of_freedom": { "translation": false }, "geometry": { "type": "circle", "radius": 6 }, "metadata": { "fixed": true, "render": { "color": "#868e96", "visible": true } } }
+  ],
+  "interactions": [
+    { "id": "breakable_rod", "type": "constraint", "model": "distance", "between": ["anchor", "bob"], "parameters": { "value": 130, "compliance": 0 }, "metadata": { "render": { "color": "#d9480f" }, "description": "Removed at t >= 1.5." } },
+    { "id": "soft_guide", "type": "constraint", "model": "distance", "between": ["guide", "bob"], "parameters": { "value": 170, "compliance": 0.08 }, "metadata": { "render": { "color": "#7048e8" }, "description": "Soft remaining guide after topology change." } },
+    { "id": "gravity_force", "type": "field", "model": "uniform", "field": "gravity", "applies_to": ["bob"] }
+  ],
+  "fields": [{ "id": "gravity", "model": "uniform", "vector": [0, 120], "metadata": { "render": { "color": "#2f9e44", "pointShape": "circle", "fieldDensity": 0.65, "opacity": 0.45 } } }],
+  "initial_state": {
+    "anchor": { "position": [300, 140], "velocity": [0, 0] },
+    "bob": { "position": [430, 140], "velocity": [0, 0] },
+    "guide": { "position": [360, 290], "velocity": [0, 0] }
+  },
+  "events": [
+    {
+      "id": "break_constraint",
+      "trigger": "time",
+      "condition": "t >= 1.5",
+      "action": { "type": "remove", "target": "breakable_rod" },
+      "guard": { "retrigger": "never", "max_triggers": 1 }
+    }
+  ],
+  "observables": { "position": true, "velocity": true, "energy": true, "constraint_error": true, "events": true },
+  "timeline": {
+    "terminal_condition": "t >= 5",
+    "keyframes": [
+      { "t": 0, "state": "initial" },
+      { "t": 1.5, "event": "break_constraint" }
+    ]
+  }
+}

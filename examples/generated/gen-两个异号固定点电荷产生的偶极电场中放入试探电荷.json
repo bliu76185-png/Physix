@@ -1,0 +1,322 @@
+{
+  "_title": "两个异号固定点电荷产生的偶极电场中放入试探电荷",
+  "_prompt": "两个异号固定点电荷产生的偶极电场中放入试探电荷",
+  "_generatedAt": "2026-06-21T16:56:44.002Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "bounds": {
+      "min": [
+        -4,
+        -2
+      ],
+      "max": [
+        4,
+        5
+      ]
+    },
+    "gravity": {
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "source_pos",
+      "label": "正源电荷 +Q",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "radius": 0.15,
+        "charge": 0.00001,
+        "restitution": 0,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#e74c3c",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "source_neg",
+      "label": "负源电荷 -Q",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "radius": 0.15,
+        "charge": -0.00001,
+        "restitution": 0,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#3498db",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "test_charge",
+      "label": "试探电荷 q",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.15,
+        "charge": 0.000001,
+        "restitution": 0.3,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "fixed": false,
+        "render": {
+          "color": "#f1c40f",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground",
+      "label": "地面",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "restitution": 0.3,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          100,
+          0.4
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#6c757d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "gravity_on_test",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "test_charge"
+      ]
+    },
+    {
+      "id": "efield_pos_on_test",
+      "type": "field",
+      "model": "radial",
+      "field": "e_field_pos",
+      "applies_to": [
+        "test_charge"
+      ]
+    },
+    {
+      "id": "efield_neg_on_test",
+      "type": "field",
+      "model": "radial",
+      "field": "e_field_neg",
+      "applies_to": [
+        "test_charge"
+      ]
+    },
+    {
+      "id": "ground_contact",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "test_charge",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0.3,
+        "friction": 0.3
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "contact"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        -9.81
+      ]
+    },
+    {
+      "id": "e_field_pos",
+      "model": "radial",
+      "origin": [
+        -1,
+        1
+      ],
+      "strength": 89900,
+      "metadata": {
+        "tags": [
+          "electric",
+          "charge"
+        ],
+        "description": "正点电荷电场"
+      }
+    },
+    {
+      "id": "e_field_neg",
+      "model": "radial",
+      "origin": [
+        1,
+        1
+      ],
+      "strength": -89900,
+      "metadata": {
+        "tags": [
+          "electric",
+          "charge"
+        ],
+        "description": "负点电荷电场"
+      }
+    }
+  ],
+  "initial_state": {
+    "source_pos": {
+      "position": [
+        -1,
+        1
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "source_neg": {
+      "position": [
+        1,
+        1
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "test_charge": {
+      "position": [
+        0,
+        3
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "ground": {
+      "position": [
+        0,
+        -1.5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "power": true,
+    "work": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 10",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

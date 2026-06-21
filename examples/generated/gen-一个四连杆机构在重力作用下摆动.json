@@ -1,0 +1,518 @@
+{
+  "_title": "一个四连杆机构在重力作用下摆动",
+  "_prompt": "一个四连杆机构在重力作用下摆动",
+  "_generatedAt": "2026-06-21T17:06:29.781Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "bounds": {
+      "min": [
+        -2,
+        -2
+      ],
+      "max": [
+        4,
+        4
+      ]
+    },
+    "gravity": {
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "anchor_left",
+      "label": "Frame Left Pivot",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "radius": 0.1,
+        "restitution": 0,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.1
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#6c757d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "anchor_right",
+      "label": "Frame Right Pivot",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "radius": 0.1,
+        "restitution": 0,
+        "friction": 0
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.1
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#6c757d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "mass_crank",
+      "label": "Crank Center of Mass",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.15,
+        "restitution": 0.3,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#1f8a70",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "mass_coupler",
+      "label": "Coupler Center of Mass",
+      "type": "particle",
+      "properties": {
+        "mass": 2,
+        "radius": 0.15,
+        "restitution": 0.3,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#d9534f",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "mass_rocker",
+      "label": "Rocker Center of Mass",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.15,
+        "restitution": 0.3,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#1f8a70",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground",
+      "label": "Ground Floor",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "restitution": 0,
+        "friction": 0.5
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          100,
+          0.5
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#adb5bd",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "rod_crank",
+      "type": "constraint",
+      "model": "spring",
+      "between": [
+        "anchor_left",
+        "mass_crank"
+      ],
+      "parameters": {
+        "rest_length": 0.5,
+        "stiffness": 5000,
+        "damping": 20,
+        "compliance": 0.0002,
+        "value": 0.5
+      },
+      "metadata": {
+        "priority": 5,
+        "lambda_max": 2000,
+        "tags": [
+          "spring",
+          "rigid_rod"
+        ],
+        "description": "spring tension / elastic force",
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "rod_coupler_left",
+      "type": "constraint",
+      "model": "spring",
+      "between": [
+        "mass_crank",
+        "mass_coupler"
+      ],
+      "parameters": {
+        "rest_length": 0.75,
+        "stiffness": 5000,
+        "damping": 20,
+        "compliance": 0.0002,
+        "value": 0.75
+      },
+      "metadata": {
+        "priority": 5,
+        "lambda_max": 2000,
+        "tags": [
+          "spring",
+          "rigid_rod"
+        ],
+        "description": "spring tension / elastic force",
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "rod_coupler_right",
+      "type": "constraint",
+      "model": "spring",
+      "between": [
+        "mass_coupler",
+        "mass_rocker"
+      ],
+      "parameters": {
+        "rest_length": 0.75,
+        "stiffness": 5000,
+        "damping": 20,
+        "compliance": 0.0002,
+        "value": 0.75
+      },
+      "metadata": {
+        "priority": 5,
+        "lambda_max": 2000,
+        "tags": [
+          "spring",
+          "rigid_rod"
+        ],
+        "description": "spring tension / elastic force",
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "rod_rocker",
+      "type": "constraint",
+      "model": "spring",
+      "between": [
+        "anchor_right",
+        "mass_rocker"
+      ],
+      "parameters": {
+        "rest_length": 0.5,
+        "stiffness": 5000,
+        "damping": 20,
+        "compliance": 0.0002,
+        "value": 0.5
+      },
+      "metadata": {
+        "priority": 5,
+        "lambda_max": 2000,
+        "tags": [
+          "spring",
+          "rigid_rod"
+        ],
+        "description": "spring tension / elastic force",
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "gravity_on_masses",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "mass_crank",
+        "mass_coupler",
+        "mass_rocker"
+      ]
+    },
+    {
+      "id": "ground_contact_crank",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "mass_crank",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0.3,
+        "friction": 0.5
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "contact"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground_contact_coupler",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "mass_coupler",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0.3,
+        "friction": 0.5
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "contact"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground_contact_rocker",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "mass_rocker",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0.3,
+        "friction": 0.5
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "contact"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  ],
+  "initial_state": {
+    "anchor_left": {
+      "position": [
+        0,
+        3
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "anchor_right": {
+      "position": [
+        2,
+        3
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "mass_crank": {
+      "position": [
+        0.5,
+        2.567
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "mass_coupler": {
+      "position": [
+        1,
+        1.634
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "mass_rocker": {
+      "position": [
+        1.5,
+        2.567
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "ground": {
+      "position": [
+        1,
+        -1.75
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "power": true,
+    "work": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 10",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

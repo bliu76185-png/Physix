@@ -1,0 +1,1272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://physics-visualizer.local/physics-problem.schema.json",
+  "title": "Physics Problem Representation Language v3",
+  "description": "Constraint-first, event-driven DSL for describing high-school physics problems. This schema describes physical semantics only; solvers, integration methods, iterations, and runtime parameters are intentionally out of scope.",
+  "type": "object",
+  "required": [
+    "version",
+    "world",
+    "objects",
+    "interactions",
+    "fields",
+    "initial_state",
+    "events",
+    "observables",
+    "timeline"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": "3.0"
+    },
+    "world": {
+      "$ref": "#/$defs/world"
+    },
+    "variables": {
+      "type": "array",
+      "description": "Interactive scalar variables that can be bound to numeric DSL fields and controlled by sliders before simulation.",
+      "items": {
+        "$ref": "#/$defs/variable"
+      }
+    },
+    "motion_profiles": {
+      "type": "array",
+      "description": "Time-dependent controls that drive object position, velocity, force, rotation, or angular velocity.",
+      "items": {
+        "$ref": "#/$defs/motionProfile"
+      }
+    },
+    "objects": {
+      "type": "array",
+      "description": "Physical entities and their degrees of freedom. These are semantic objects, not engine bodies.",
+      "items": {
+        "$ref": "#/$defs/object"
+      }
+    },
+    "interactions": {
+      "type": "array",
+      "description": "Constraint graph. Forces, contacts, fields, and geometry are represented as constraints or field influences.",
+      "items": {
+        "$ref": "#/$defs/interaction"
+      }
+    },
+    "fields": {
+      "type": "array",
+      "description": "Continuous spatial influence functions.",
+      "items": {
+        "$ref": "#/$defs/field"
+      }
+    },
+    "initial_state": {
+      "type": "object",
+      "description": "Explicit initial conditions keyed by object id. No implicit object state is allowed by design.",
+      "additionalProperties": {
+        "$ref": "#/$defs/state"
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "First-class transition points that modify constraints, objects, fields, or state.",
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    },
+    "observables": {
+      "$ref": "#/$defs/observables"
+    },
+    "timeline": {
+      "$ref": "#/$defs/timeline"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z_][A-Za-z0-9_\\-]*$"
+    },
+    "variable": {
+      "type": "object",
+      "required": ["id", "min", "max", "default", "bindings"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "default": {
+          "type": "number"
+        },
+        "bindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/variableBinding"
+          }
+        },
+        "metadata": {
+          "$ref": "#/$defs/metadata"
+        }
+      }
+    },
+    "variableBinding": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Writable numeric DSL path, e.g. objects[id=ball].properties.mass or fields[id=g].vector[1]."
+        }
+      }
+    },
+    "vector": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3,
+      "items": {
+        "type": "number"
+      },
+      "description": "Coordinate vector. 2D is the default; a third coordinate is reserved for future extension."
+    },
+    "world": {
+      "type": "object",
+      "required": ["units"],
+      "additionalProperties": false,
+      "properties": {
+        "units": {
+          "type": "object",
+          "required": ["length", "time"],
+          "additionalProperties": false,
+          "properties": {
+            "length": {
+              "enum": ["m", "cm", "mm", "px"]
+            },
+            "time": {
+              "const": "s"
+            },
+            "mass": {
+              "enum": ["kg", "g"]
+            },
+            "charge": {
+              "enum": ["C"]
+            },
+            "angle": {
+              "enum": ["rad", "deg"]
+            }
+          }
+        },
+        "scale": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "bounds": {
+          "type": "object",
+          "required": ["min", "max"],
+          "additionalProperties": false,
+          "properties": {
+            "min": {
+              "$ref": "#/$defs/vector"
+            },
+            "max": {
+              "$ref": "#/$defs/vector"
+            }
+          }
+        },
+        "constants": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Named physical constants such as g, k, or Coulomb constants. These are semantic constants, not solver settings."
+        },
+        "gravity": {
+          "type": "object",
+          "required": ["vector"],
+          "additionalProperties": false,
+          "properties": {
+            "vector": {
+              "$ref": "#/$defs/vector"
+            }
+          }
+        }
+      },
+      "not": {
+        "anyOf": [
+          { "required": ["solver"] },
+          { "required": ["integrator"] },
+          { "required": ["iterations"] },
+          { "required": ["substeps"] },
+          { "required": ["dt"] }
+        ]
+      }
+    },
+    "object": {
+      "type": "object",
+      "required": ["id", "type", "properties", "degrees_of_freedom"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string"
+        },
+        "type": {
+          "enum": ["particle", "rigid_body"]
+        },
+        "properties": {
+          "$ref": "#/$defs/objectProperties"
+        },
+        "degrees_of_freedom": {
+          "$ref": "#/$defs/degreesOfFreedom"
+        },
+        "geometry": {
+          "$ref": "#/$defs/geometry"
+        },
+        "component": {
+          "$ref": "#/$defs/physicalComponent"
+        },
+        "metadata": {
+          "$ref": "#/$defs/metadata"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "particle"
+              }
+            },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "degrees_of_freedom": {
+                "required": ["translation"]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "rigid_body"
+              }
+            },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "degrees_of_freedom": {
+                "required": ["translation", "rotation"]
+              },
+              "properties": {
+                "required": ["mass", "inertia"]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "objectProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mass": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "charge": {
+          "type": "number"
+        },
+        "inertia": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "radius": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "material": {
+          "$ref": "#/$defs/id"
+        },
+        "friction": {
+          "type": "number",
+          "minimum": 0
+        },
+        "restitution": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "static_friction": {
+          "type": "number",
+          "minimum": 0
+        },
+        "dynamic_friction": {
+          "type": "number",
+          "minimum": 0
+        },
+        "drag_coefficient": {
+          "type": "number",
+          "minimum": 0,
+          "description": "速度阻尼系数 c，产生阻尼力 F_drag = -c * v"
+        },
+        "linear_damping": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0,
+          "description": "Box2D 线速度阻尼 (F_damp = -linear_damping * v)"
+        },
+        "angular_damping": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0,
+          "description": "Box2D 角速度阻尼"
+        }
+      }
+    },
+    "physicalComponent": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind", "angle", "length"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "inclined_plane" },
+            "angle": { "type": "number", "description": "Incline angle in radians." },
+            "length": { "type": "number", "exclusiveMinimum": 0 },
+            "thickness": { "type": "number", "exclusiveMinimum": 0 },
+            "surface": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "friction": { "type": "number", "minimum": 0 },
+                "restitution": { "type": "number", "minimum": 0, "maximum": 1 }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "degreesOfFreedom": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "translation": {
+          "type": "boolean"
+        },
+        "rotation": {
+          "type": "boolean"
+        }
+      }
+    },
+    "geometry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "radius"],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "circle"
+            },
+            "radius": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "size"],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "box"
+            },
+            "size": {
+              "$ref": "#/$defs/vector"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "points"],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "polygon"
+            },
+            "points": {
+              "type": "array",
+              "minItems": 3,
+              "items": {
+                "$ref": "#/$defs/vector"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "state": {
+      "type": "object",
+      "required": ["position", "velocity"],
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/vector"
+        },
+        "velocity": {
+          "$ref": "#/$defs/vector"
+        },
+        "rotation": {
+          "type": "number"
+        },
+        "angular_velocity": {
+          "type": "number"
+        }
+      }
+    },
+    "interaction": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/constraintInteraction"
+        },
+        {
+          "$ref": "#/$defs/fieldInteraction"
+        },
+        {
+          "$ref": "#/$defs/contactInteraction"
+        }
+      ]
+    },
+    "constraintInteraction": {
+      "type": "object",
+      "required": ["id", "type", "model", "between", "parameters"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "const": "constraint"
+        },
+        "model": {
+          "enum": ["distance", "spring", "angle", "inequality", "weld", "hinge", "slider", "pulley", "wheel", "friction", "motor"]
+        },
+        "between": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "parameters": {
+          "$ref": "#/$defs/constraintParameters"
+        },
+        "metadata": {
+          "$ref": "#/$defs/metadata"
+        }
+      }
+    },
+    "fieldInteraction": {
+      "type": "object",
+      "required": ["id", "type", "model", "field"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "const": "field"
+        },
+        "model": {
+          "enum": ["uniform", "radial", "custom"]
+        },
+        "field": {
+          "$ref": "#/$defs/id"
+        },
+        "applies_to": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "metadata": {
+          "$ref": "#/$defs/metadata"
+        }
+      }
+    },
+    "contactInteraction": {
+      "type": "object",
+      "required": ["id", "type", "model", "contact", "between", "condition"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "const": "constraint"
+        },
+        "model": {
+          "const": "inequality"
+        },
+        "contact": {
+          "$ref": "#/$defs/contactModel"
+        },
+        "between": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "condition": {
+          "$ref": "#/$defs/expression"
+        },
+        "metadata": {
+          "$ref": "#/$defs/metadata"
+        }
+      }
+    },
+    "constraintParameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "rest_length": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Semantic rest length for spring/distance constraints."
+        },
+        "compliance": {
+          "type": "number",
+          "minimum": 0,
+          "description": "0 means hard constraint; larger values represent softer constraints such as springs."
+        },
+        "condition": {
+          "$ref": "#/$defs/expression"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "friction": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Pairwise friction coefficient for this contact pair. Overrides body-level friction."
+        },
+        "restitution": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Pairwise restitution coefficient for this contact pair. Overrides body-level restitution."
+        },
+        "anchor": {
+          "$ref": "#/$defs/vector",
+          "description": "世界坐标锚点，用于 weld/hinge/slider/wheel/friction 约束"
+        },
+        "axis": {
+          "$ref": "#/$defs/vector",
+          "description": "滑轨/轮轴方向（局部坐标），用于 slider/wheel 约束"
+        },
+        "enable_limit": {
+          "type": "boolean",
+          "description": "是否启用角度/位移限制（hinge/slider/wheel）"
+        },
+        "lower": {
+          "type": "number",
+          "description": "位移下限（slider）"
+        },
+        "upper": {
+          "type": "number",
+          "description": "位移上限（slider）"
+        },
+        "lower_angle": {
+          "type": "number",
+          "description": "角度下限/弧度（hinge）"
+        },
+        "upper_angle": {
+          "type": "number",
+          "description": "角度上限/弧度（hinge）"
+        },
+        "enable_motor": {
+          "type": "boolean",
+          "description": "是否启用马达（hinge/slider/wheel）"
+        },
+        "motor_speed": {
+          "type": "number",
+          "description": "马达目标速度（hinge/slider/wheel）"
+        },
+        "max_force": {
+          "type": "number",
+          "minimum": 0,
+          "description": "马达最大力/摩擦力上限"
+        },
+        "max_torque": {
+          "type": "number",
+          "minimum": 0,
+          "description": "马达/摩擦最大扭矩"
+        },
+        "stiffness": {
+          "type": "number",
+          "minimum": 0,
+          "description": "弹性刚度 N/m（weld/wheel）"
+        },
+        "damping": {
+          "type": "number",
+          "minimum": 0,
+          "description": "弹性阻尼 N·s/m（weld/wheel）"
+        },
+        "ground_anchor_a": {
+          "$ref": "#/$defs/vector",
+          "description": "滑轮地面锚点 A（世界坐标）"
+        },
+        "ground_anchor_b": {
+          "$ref": "#/$defs/vector",
+          "description": "滑轮地面锚点 B（世界坐标）"
+        },
+        "length_a": {
+          "type": "number",
+          "minimum": 0,
+          "description": "滑轮静息绳长 A"
+        },
+        "length_b": {
+          "type": "number",
+          "minimum": 0,
+          "description": "滑轮静息绳长 B"
+        },
+        "ratio": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "滑轮/齿轮传动比"
+        },
+        "linear_offset": {
+          "$ref": "#/$defs/vector",
+          "description": "电机目标线位移偏移"
+        },
+        "angular_offset": {
+          "type": "number",
+          "description": "电机目标角位移偏移"
+        },
+        "correction_factor": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "电机修正因子 0-1"
+        }
+      }
+    },
+    "field": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["id", "model", "vector"],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "model": {
+              "const": "uniform"
+            },
+            "vector": {
+              "$ref": "#/$defs/vector"
+            },
+            "variation": {
+              "$ref": "#/$defs/fieldVariation"
+            },
+            "coupling": {
+              "$ref": "#/$defs/fieldCoupling"
+            },
+            "metadata": {
+              "$ref": "#/$defs/metadata"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["id", "model", "origin", "strength"],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "model": {
+              "const": "radial"
+            },
+            "origin": {
+              "$ref": "#/$defs/vector"
+            },
+            "strength": {
+              "type": "number"
+            },
+            "origin_from": {
+              "$ref": "#/$defs/id",
+              "description": "Optional object ID whose current position dynamically replaces the static origin. Enables moving point-charge fields."
+            },
+            "variation": {
+              "$ref": "#/$defs/fieldVariation"
+            },
+            "coupling": {
+              "$ref": "#/$defs/fieldCoupling"
+            },
+            "metadata": {
+              "$ref": "#/$defs/metadata"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["id", "model", "function"],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "model": {
+              "const": "custom"
+            },
+            "function": {
+              "$ref": "#/$defs/expression"
+            },
+            "variation": {
+              "$ref": "#/$defs/fieldVariation"
+            },
+            "coupling": {
+              "$ref": "#/$defs/fieldCoupling"
+            },
+            "metadata": {
+              "$ref": "#/$defs/metadata"
+            }
+          }
+        }
+      ]
+    },
+    "event": {
+      "type": "object",
+      "required": ["id", "trigger", "condition", "action"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string"
+        },
+        "trigger": {
+          "enum": ["condition", "impact", "constraint_saturated", "state_change", "time"]
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "action": {
+          "$ref": "#/$defs/action"
+        },
+        "guard": {
+          "$ref": "#/$defs/eventGuard"
+        },
+        "metadata": {
+          "$ref": "#/$defs/metadata"
+        }
+      }
+    },
+    "contactModel": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "point_contact"
+            },
+            "normal": {
+              "$ref": "#/$defs/vector"
+            },
+            "contact_point": {
+              "$ref": "#/$defs/vector"
+            },
+            "penetration": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["kind"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "rigid_contact"
+            },
+            "normal": {
+              "$ref": "#/$defs/vector"
+            },
+            "contact_points": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/vector"
+              }
+            },
+            "penetration": {
+              "type": "number",
+              "minimum": 0
+            },
+            "friction": {
+              "type": "number",
+              "minimum": 0
+            },
+            "restitution": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "torque_effect": {
+              "type": "boolean",
+              "description": "Whether this contact may affect angular state. Usually true for rigid_body contact and false for point contact."
+            }
+          }
+        }
+      ]
+    },
+    "fieldVariation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "spatial": {
+          "$ref": "#/$defs/expression"
+        },
+        "temporal": {
+          "$ref": "#/$defs/expression"
+        },
+        "domain": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bounds": {
+              "type": "object",
+              "required": ["min", "max"],
+              "additionalProperties": false,
+              "properties": {
+                "min": {
+                  "$ref": "#/$defs/vector"
+                },
+                "max": {
+                  "$ref": "#/$defs/vector"
+                }
+              }
+            },
+            "time_window": {
+              "type": "object",
+              "required": ["start", "end"],
+              "additionalProperties": false,
+              "properties": {
+                "start": {
+                  "type": "number"
+                },
+                "end": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Describes how a field may vary over position and time without introducing solver/runtime settings."
+    },
+    "fieldCoupling": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "enum": ["position", "velocity", "acceleration", "charge", "mass", "time", "custom_state"]
+          }
+        },
+        "law": {
+          "$ref": "#/$defs/expression"
+        },
+        "frame": {
+          "enum": ["world", "object", "relative"]
+        }
+      },
+      "description": "Allows field influence to couple with object state, for example velocity-dependent drag or magnetic-style velocity coupling."
+    },
+    "motionProfile": {
+      "type": "object",
+      "required": ["id", "target", "quantity"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": "string" },
+        "target": { "$ref": "#/$defs/id" },
+        "quantity": {
+          "enum": ["position", "velocity", "force", "rotation", "angular_velocity"]
+        },
+        "mode": {
+          "enum": ["set", "add"]
+        },
+        "axis": {
+          "enum": ["x", "y", "xy", "rotation"]
+        },
+        "expression": {
+          "$ref": "#/$defs/expression"
+        },
+        "keyframes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/motionProfileKeyframe" }
+        },
+        "time_window": {
+          "type": "object",
+          "required": ["start", "end"],
+          "additionalProperties": false,
+          "properties": {
+            "start": { "type": "number" },
+            "end": { "type": "number" }
+          }
+        },
+        "metadata": { "$ref": "#/$defs/metadata" }
+      },
+      "anyOf": [
+        { "required": ["expression"] },
+        { "required": ["keyframes"] }
+      ]
+    },
+    "motionProfileKeyframe": {
+      "type": "object",
+      "required": ["t", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "t": { "type": "number", "minimum": 0 },
+        "value": {
+          "oneOf": [
+            { "type": "number" },
+            { "$ref": "#/$defs/vector" }
+          ]
+        }
+      }
+    },
+    "eventGuard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "retrigger": {
+          "enum": ["never", "on_state_exit", "after_cooldown", "always"]
+        },
+        "cooldown": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max_triggers": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "state_latch": {
+          "type": "boolean",
+          "description": "When true, the event must observe the condition becoming false before it can trigger again."
+        },
+        "cycle_group": {
+          "$ref": "#/$defs/id"
+        },
+        "cycle_policy": {
+          "enum": ["block_same_tick", "allow_next_keyframe", "allow_with_cooldown"]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "retrigger": {
+                "const": "after_cooldown"
+              }
+            },
+            "required": ["retrigger"]
+          },
+          "then": {
+            "required": ["cooldown"]
+          }
+        }
+      ],
+      "description": "Prevents infinite or same-frame event loops by defining retrigger and cycle policies."
+    },
+    "condition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "expr"],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "expression"
+            },
+            "expr": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ]
+    },
+    "expression": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "expr"],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "expression"
+            },
+            "expr": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ]
+    },
+    "action": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "target"],
+          "additionalProperties": true,
+          "properties": {
+            "type": {
+              "enum": ["modify", "modify_constraint", "switch_model", "spawn", "remove", "control"]
+            },
+            "target": {
+              "$ref": "#/$defs/id"
+            },
+            "controls": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/quantityControl"
+              }
+            },
+            "inferred_force": {
+              "$ref": "#/$defs/inferredForce"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "from", "to"],
+          "additionalProperties": true,
+          "properties": {
+            "type": {
+              "const": "switch_model"
+            },
+            "from": {
+              "type": "string",
+              "minLength": 1
+            },
+            "to": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "quantityControl": {
+      "type": "object",
+      "required": ["quantity", "operation"],
+      "additionalProperties": false,
+      "properties": {
+        "quantity": {
+          "enum": ["position", "velocity", "force", "impulse", "acceleration", "mass", "stiffness", "damping", "rest_length"]
+        },
+        "operation": {
+          "enum": ["set", "add", "clamp"]
+        },
+        "value": {
+          "$ref": "#/$defs/vector"
+        },
+        "min": {
+          "$ref": "#/$defs/vector"
+        },
+        "max": {
+          "$ref": "#/$defs/vector"
+        },
+        "duration": {
+          "enum": ["instant", "persistent"]
+        }
+      }
+    },
+    "inferredForce": {
+      "type": "object",
+      "required": ["id", "mode"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string"
+        },
+        "mode": {
+          "enum": ["counteract_to_hold_velocity", "delta_velocity"]
+        }
+      }
+    },
+    "observables": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "type": "boolean"
+        },
+        "velocity": {
+          "type": "boolean"
+        },
+        "acceleration": {
+          "type": "boolean"
+        },
+        "energy": {
+          "type": "boolean"
+        },
+        "momentum": {
+          "type": "boolean"
+        },
+        "angular_momentum": {
+          "type": "boolean"
+        },
+        "constraint_error": {
+          "type": "boolean"
+        },
+        "events": {
+          "type": "boolean"
+        },
+        "power": {
+          "type": "boolean",
+          "description": "瞬时功率 P = F·v"
+        },
+        "work": {
+          "type": "boolean",
+          "description": "累积功 W = ∫P dt（从 t=0 开始的时间积分）"
+        }
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "required": ["keyframes"],
+      "additionalProperties": false,
+      "properties": {
+        "terminal_condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "keyframes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/keyframe"
+          }
+        }
+      }
+    },
+    "keyframe": {
+      "type": "object",
+      "required": ["t"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "t": {
+          "type": "number",
+          "minimum": 0
+        },
+        "state": {
+          "oneOf": [
+            {
+              "const": "initial"
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/state"
+              }
+            }
+          ]
+        },
+        "event": {
+          "$ref": "#/$defs/id"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "anyOf": [
+        {
+          "required": ["state"]
+        },
+        {
+          "required": ["event"]
+        }
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "render": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "color": {
+              "type": "string"
+            },
+            "visible": {
+              "type": "boolean"
+            },
+            "debug": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  }
+}

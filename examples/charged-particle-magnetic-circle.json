@@ -1,0 +1,38 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "px", "time": "s", "mass": "kg", "charge": "C" },
+    "scale": 1,
+    "bounds": { "min": [0, 0], "max": [720, 560] },
+    "constants": {}
+  },
+  "objects": [
+    {
+      "id": "particle",
+      "label": "带电粒子",
+      "type": "particle",
+      "properties": { "mass": 1, "charge": 1, "radius": 12, "material": "steel" },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 12 },
+      "metadata": { "render": { "color": "#b84a62", "visible": true } }
+    }
+  ],
+  "interactions": [
+    { "id": "magnetic_force", "type": "field", "model": "uniform", "field": "magnetic_field", "applies_to": ["particle"] }
+  ],
+  "fields": [
+    {
+      "id": "magnetic_field",
+      "model": "uniform",
+      "vector": [0, 0, 2.2],
+      "coupling": { "depends_on": ["velocity", "charge"], "law": "q_v_cross_B", "frame": "world" },
+      "metadata": { "tags": ["magnetic"], "description": "磁场力 qv×B", "render": { "color": "#7048e8", "pointShape": "cross", "fieldDensity": 1.1, "opacity": 0.5 } }
+    }
+  ],
+  "initial_state": {
+    "particle": { "position": [360, 170], "velocity": [180, 0] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "energy": true },
+  "timeline": { "terminal_condition": "t >= 6", "keyframes": [{ "t": 0, "state": "initial" }] }
+}

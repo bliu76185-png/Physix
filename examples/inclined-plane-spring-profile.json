@@ -1,0 +1,123 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "m", "time": "s", "mass": "kg", "angle": "rad" },
+    "scale": 100,
+    "bounds": { "min": [-3.2, -1.8], "max": [3.2, 2.8] },
+    "constants": { "g": 9.81 },
+    "gravity": { "vector": [0, -9.81] }
+  },
+  "objects": [
+    {
+      "id": "ramp",
+      "label": "Inclined plane",
+      "type": "rigid_body",
+      "component": {
+        "kind": "inclined_plane",
+        "angle": 0.523599,
+        "length": 4.2,
+        "thickness": 0.28,
+        "surface": { "friction": 0.08, "restitution": 0.1 }
+      },
+      "properties": { "mass": 1000000, "inertia": 1000000, "material": "inclined_plane" },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": { "color": "#868e96", "visible": true }
+      }
+    },
+    {
+      "id": "anchor",
+      "label": "Spring anchor",
+      "type": "particle",
+      "properties": { "mass": 1000000, "radius": 0.06, "material": "steel" },
+      "degrees_of_freedom": { "translation": false },
+      "geometry": { "type": "circle", "radius": 0.06 },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": { "color": "#495057", "visible": true }
+      }
+    },
+    {
+      "id": "block",
+      "label": "Block",
+      "type": "rigid_body",
+      "properties": { "mass": 1.2, "inertia": 0.02, "material": "wood", "friction": 0.08 },
+      "degrees_of_freedom": { "translation": true, "rotation": true },
+      "geometry": { "type": "box", "size": [0.34, 0.22] },
+      "metadata": {
+        "role": "dynamic",
+        "render": { "color": "#2f9e44", "visible": true }
+      }
+    }
+  ],
+  "interactions": [
+    { "id": "gravity_on_block", "type": "field", "model": "uniform", "field": "g_field", "applies_to": ["block"] },
+    {
+      "id": "ramp_contact",
+      "type": "constraint",
+      "model": "inequality",
+      "between": ["block", "ramp"],
+      "parameters": { "condition": "contact", "compliance": 0.000001 },
+      "metadata": { "priority": 2, "lambda_max": 1200, "description": "Contact with the inclined plane." }
+    },
+    {
+      "id": "spring_anchor_block",
+      "type": "constraint",
+      "model": "spring",
+      "between": ["anchor", "block"],
+      "parameters": {
+        "rest_length": 1.15,
+        "stiffness": 28,
+        "damping": 1.2,
+        "compliance": 0.035714
+      },
+      "metadata": {
+        "priority": 5,
+        "lambda_max": 600,
+        "tags": ["spring"],
+        "description": "Spring connection; reaction force is displayed as spring force."
+      }
+    }
+  ],
+  "fields": [
+    { "id": "g_field", "model": "uniform", "vector": [0, -9.81] }
+  ],
+  "motion_profiles": [
+    {
+      "id": "wind_push",
+      "target": "block",
+      "quantity": "force",
+      "mode": "add",
+      "axis": "x",
+      "keyframes": [
+        { "t": 0, "value": 0 },
+        { "t": 1.2, "value": 2.2 },
+        { "t": 2.8, "value": 0.6 },
+        { "t": 4.5, "value": 0 }
+      ]
+    }
+  ],
+  "initial_state": {
+    "ramp": { "position": [0, -0.75], "velocity": [0, 0] },
+    "anchor": { "position": [-1.45, 0.05], "velocity": [0, 0] },
+    "block": { "position": [-0.25, 0.42], "velocity": [0.2, 0] }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "force": true,
+    "energy": true,
+    "momentum": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 6",
+    "keyframes": [{ "t": 0, "state": "initial" }]
+  }
+}

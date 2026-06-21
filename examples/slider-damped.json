@@ -1,0 +1,51 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "m", "time": "s", "mass": "kg" },
+    "bounds": { "min": [-4, -2], "max": [4, 2] },
+    "constants": { "g": 9.8 },
+    "gravity": { "vector": [0, -9.8] }
+  },
+  "objects": [
+    {
+      "id": "ground",
+      "label": "地面导轨",
+      "type": "particle",
+      "properties": { "mass": 1, "radius": 0.05, "friction": 0.3, "restitution": 0.3 },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "geometry": { "type": "circle", "radius": 0.05 },
+      "metadata": { "role": "anchor", "description": "滑轨固定端", "priority": 1, "lambda_max": 1000 }
+    },
+    {
+      "id": "slider",
+      "label": "滑块",
+      "type": "particle",
+      "properties": { "mass": 2, "radius": 0.3, "friction": 0.3, "restitution": 0.3, "linear_damping": 2.0 },
+      "degrees_of_freedom": { "translation": true, "rotation": false },
+      "geometry": { "type": "circle", "radius": 0.3 },
+      "metadata": { "role": "dynamic", "description": "带线性阻尼的滑块", "priority": 1, "lambda_max": 1000 }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "slider_joint",
+      "type": "constraint",
+      "model": "slider",
+      "between": ["ground", "slider"],
+      "parameters": {
+        "anchor": [-2, 0],
+        "axis": [1, 0],
+        "compliance": 1e-6
+      },
+      "metadata": { "priority": 1, "lambda_max": 1000, "description": "水平滑轨约束" }
+    }
+  ],
+  "fields": [],
+  "initial_state": {
+    "ground": { "position": [0, 0], "velocity": [0, 0] },
+    "slider": { "position": [-2, 0], "velocity": [4, 0] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "acceleration": true, "energy": true, "power": true, "work": true },
+  "timeline": { "keyframes": [{ "t": 0, "state": "initial" }], "terminal_condition": "t >= 5" }
+}

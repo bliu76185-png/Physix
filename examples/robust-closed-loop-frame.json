@@ -1,0 +1,33 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "px", "time": "s", "mass": "kg" },
+    "scale": 1,
+    "bounds": { "min": [0, 0], "max": [720, 560] },
+    "constants": {}
+  },
+  "objects": [
+    { "id": "a", "label": "闭环 A", "type": "particle", "properties": { "mass": 1000000, "radius": 8, "material": "steel" }, "degrees_of_freedom": { "translation": false }, "geometry": { "type": "circle", "radius": 8 }, "metadata": { "fixed": true, "render": { "color": "#555", "visible": true } } },
+    { "id": "b", "label": "闭环 B", "type": "particle", "properties": { "mass": 1, "radius": 9, "material": "steel" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 9 }, "metadata": { "render": { "color": "#2c7be5", "visible": true } } },
+    { "id": "c", "label": "闭环 C", "type": "particle", "properties": { "mass": 1, "radius": 9, "material": "steel" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 9 }, "metadata": { "render": { "color": "#2c7be5", "visible": true } } },
+    { "id": "d", "label": "闭环 D", "type": "particle", "properties": { "mass": 1, "radius": 9, "material": "steel" }, "degrees_of_freedom": { "translation": true }, "geometry": { "type": "circle", "radius": 9 }, "metadata": { "render": { "color": "#2c7be5", "visible": true } } }
+  ],
+  "interactions": [
+    { "id": "ab", "type": "constraint", "model": "distance", "between": ["a", "b"], "parameters": { "value": 130, "compliance": 0 }, "metadata": { "render": { "color": "#7048e8" } } },
+    { "id": "bc", "type": "constraint", "model": "distance", "between": ["b", "c"], "parameters": { "value": 90, "compliance": 0 }, "metadata": { "render": { "color": "#7048e8" } } },
+    { "id": "cd", "type": "constraint", "model": "distance", "between": ["c", "d"], "parameters": { "value": 130, "compliance": 0 }, "metadata": { "render": { "color": "#7048e8" } } },
+    { "id": "da", "type": "constraint", "model": "distance", "between": ["d", "a"], "parameters": { "value": 90, "compliance": 0 }, "metadata": { "render": { "color": "#7048e8" } } },
+    { "id": "ac_diagonal", "type": "constraint", "model": "distance", "between": ["a", "c"], "parameters": { "value": 158.1, "compliance": 0 }, "metadata": { "render": { "color": "#9c36b5" } } },
+    { "id": "gravity_force", "type": "field", "model": "uniform", "field": "gravity", "applies_to": ["b", "c", "d"] }
+  ],
+  "fields": [{ "id": "gravity", "model": "uniform", "vector": [0, 80], "metadata": { "render": { "color": "#2f9e44", "pointShape": "circle", "fieldDensity": 0.65, "opacity": 0.45 } } }],
+  "initial_state": {
+    "a": { "position": [290, 180], "velocity": [0, 0] },
+    "b": { "position": [420, 180], "velocity": [0, 5] },
+    "c": { "position": [420, 270], "velocity": [-5, 0] },
+    "d": { "position": [290, 270], "velocity": [0, 0] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "energy": true, "constraint_error": true },
+  "timeline": { "terminal_condition": "t >= 5", "keyframes": [{ "t": 0, "state": "initial" }] }
+}

@@ -1,0 +1,294 @@
+{
+  "_title": "Fixed Support、Slider A、Slider B",
+  "_prompt": "竖直方向弹簧振子连接滑块A，在平衡态静止，滑块B由静止从距离A1m处自由下落，撞击A，弹性系数未知可变",
+  "_generatedAt": "2026-06-21T10:07:59.943Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "scale": 100,
+    "bounds": {
+      "min": [
+        -1,
+        -0.5
+      ],
+      "max": [
+        1,
+        2.5
+      ]
+    },
+    "constants": {
+      "g": 9.81
+    },
+    "gravity": {
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "support",
+      "label": "Fixed Support",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          0.2,
+          0.2
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#333333",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "slider_A",
+      "label": "Slider A",
+      "type": "particle",
+      "properties": {
+        "mass": "#m_A",
+        "radius": 0.15,
+        "restitution": "#restitution"
+      },
+      "degrees_of_freedom": {
+        "translation": true
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#1f8a70",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "slider_B",
+      "label": "Slider B",
+      "type": "particle",
+      "properties": {
+        "mass": "#m_B",
+        "radius": 0.15,
+        "restitution": "#restitution"
+      },
+      "degrees_of_freedom": {
+        "translation": true
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#e65100",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "gravity_on_A",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "slider_A"
+      ]
+    },
+    {
+      "id": "gravity_on_B",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "slider_B"
+      ]
+    },
+    {
+      "id": "spring_connector",
+      "type": "constraint",
+      "model": "spring",
+      "between": [
+        "support",
+        "slider_A"
+      ],
+      "parameters": {
+        "rest_length": 1.9019,
+        "stiffness": "#k",
+        "damping": 0.1,
+        "compliance": 0.000001,
+        "value": 1.9019
+      },
+      "metadata": {
+        "priority": 5,
+        "lambda_max": 1000,
+        "tags": [
+          "spring"
+        ],
+        "description": "spring tension / elastic force",
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "id": "k",
+      "label": "Spring constant",
+      "min": 10,
+      "max": 500,
+      "default": 100,
+      "step": 10,
+      "unit": "N/m",
+      "description": "Variable spring constant of the vertical spring.",
+      "bindings": [
+        {
+          "path": "interactions[id=spring_connector].parameters.stiffness",
+          "value": "#k"
+        }
+      ]
+    },
+    {
+      "id": "m_A",
+      "label": "Mass of slider A",
+      "min": 0.1,
+      "max": 10,
+      "default": 1,
+      "step": 0.1,
+      "unit": "kg",
+      "bindings": [
+        {
+          "path": "objects[id=slider_A].properties.mass",
+          "value": "#m_A"
+        }
+      ]
+    },
+    {
+      "id": "m_B",
+      "label": "Mass of slider B",
+      "min": 0.1,
+      "max": 10,
+      "default": 1,
+      "step": 0.1,
+      "unit": "kg",
+      "bindings": [
+        {
+          "path": "objects[id=slider_B].properties.mass",
+          "value": "#m_B"
+        }
+      ]
+    },
+    {
+      "id": "restitution",
+      "label": "Collision restitution (0 = stick, 1 = elastic)",
+      "min": 0,
+      "max": 1,
+      "default": 0,
+      "step": 0.05,
+      "unit": "",
+      "bindings": [
+        {
+          "path": "objects[id=slider_A].properties.restitution",
+          "value": "#restitution"
+        },
+        {
+          "path": "objects[id=slider_B].properties.restitution",
+          "value": "#restitution"
+        }
+      ]
+    }
+  ],
+  "initial_state": {
+    "support": {
+      "position": [
+        0,
+        2
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "slider_A": {
+      "position": [
+        0,
+        0
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "slider_B": {
+      "position": [
+        0,
+        1
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "energy": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 6",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

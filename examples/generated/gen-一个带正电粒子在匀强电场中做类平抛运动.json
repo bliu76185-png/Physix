@@ -1,0 +1,193 @@
+{
+  "_title": "一个带正电粒子在匀强电场中做类平抛运动",
+  "_prompt": "一个带正电粒子在匀强电场中做类平抛运动",
+  "_generatedAt": "2026-06-21T16:56:31.551Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "bounds": {
+      "min": [
+        -1,
+        -2
+      ],
+      "max": [
+        6,
+        4
+      ]
+    },
+    "gravity": {
+      "vector": [
+        0,
+        0
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "P",
+      "label": "带正电粒子",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 0.15,
+        "charge": 1,
+        "restitution": 0.3,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.15
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#e74c3c",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "G",
+      "label": "地面",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 10000000000,
+        "inertia": 10000000000,
+        "restitution": 0.3,
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          100,
+          0.4
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#6c757d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "electric_field_on_P",
+      "type": "field",
+      "model": "uniform",
+      "field": "E_field",
+      "applies_to": [
+        "P"
+      ]
+    },
+    {
+      "id": "contact_PG",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "P",
+        "G"
+      ],
+      "parameters": {
+        "condition": "contact",
+        "compliance": 0.000001,
+        "restitution": 0.3,
+        "friction": 0.3
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 2000,
+        "tags": [
+          "contact"
+        ],
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "E_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        -2
+      ],
+      "metadata": {
+        "tags": [
+          "electric"
+        ],
+        "description": "匀强电场"
+      }
+    }
+  ],
+  "initial_state": {
+    "P": {
+      "position": [
+        0,
+        2
+      ],
+      "velocity": [
+        2,
+        0
+      ]
+    },
+    "G": {
+      "position": [
+        2.5,
+        -1.5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "acceleration": true,
+    "energy": true,
+    "power": true,
+    "work": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 5.0",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

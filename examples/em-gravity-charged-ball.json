@@ -1,0 +1,131 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "m", "time": "s", "mass": "kg", "charge": "C" },
+    "bounds": { "min": [-5, -5], "max": [5, 5] },
+    "constants": { "g": 9.81 },
+    "gravity": { "vector": [0, -9.81] }
+  },
+  "objects": [
+    {
+      "id": "charged_ball",
+      "label": "带电小球",
+      "type": "particle",
+      "properties": { "mass": 0.5, "charge": 1.5, "radius": 0.2, "restitution": 0.5, "friction": 0.3 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.2 },
+      "metadata": { "role": "dynamic", "render": { "color": "#b84a62", "visible": true }, "description": "带电小球，同时受重力、电场力、洛伦兹力" }
+    },
+    {
+      "id": "ground",
+      "label": "地面",
+      "type": "rigid_body",
+      "properties": { "mass": 1e10, "inertia": 1e10, "restitution": 0.5, "friction": 0.4 },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "geometry": { "type": "box", "size": [10, 0.3] },
+      "metadata": { "role": "anchor", "fixed": true, "render": { "color": "#6c757d", "visible": true } }
+    },
+    {
+      "id": "left_wall",
+      "label": "左墙",
+      "type": "rigid_body",
+      "properties": { "mass": 1e10, "inertia": 1e10, "restitution": 0.5, "friction": 0.4 },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "geometry": { "type": "box", "size": [0.3, 10] },
+      "metadata": { "role": "anchor", "fixed": true, "render": { "color": "#6c757d", "visible": true } }
+    },
+    {
+      "id": "right_wall",
+      "label": "右墙",
+      "type": "rigid_body",
+      "properties": { "mass": 1e10, "inertia": 1e10, "restitution": 0.5, "friction": 0.4 },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "geometry": { "type": "box", "size": [0.3, 10] },
+      "metadata": { "role": "anchor", "fixed": true, "render": { "color": "#6c757d", "visible": true } }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "gravity_on_ball",
+      "type": "field",
+      "model": "uniform",
+      "field": "gravity_field",
+      "applies_to": ["charged_ball"]
+    },
+    {
+      "id": "electric_on_ball",
+      "type": "field",
+      "model": "uniform",
+      "field": "horizontal_e_field",
+      "applies_to": ["charged_ball"]
+    },
+    {
+      "id": "magnetic_on_ball",
+      "type": "field",
+      "model": "uniform",
+      "field": "vertical_b_field",
+      "applies_to": ["charged_ball"]
+    },
+    {
+      "id": "ground_contact",
+      "type": "constraint",
+      "model": "inequality",
+      "between": ["charged_ball", "ground"],
+      "parameters": { "condition": "charged_ball.y >= ground.top", "compliance": 0.000001 },
+      "metadata": { "priority": 2, "lambda_max": 1000 }
+    },
+    {
+      "id": "left_wall_contact",
+      "type": "constraint",
+      "model": "inequality",
+      "between": ["charged_ball", "left_wall"],
+      "parameters": { "condition": "charged_ball.x >= left_wall.right", "compliance": 0.000001 },
+      "metadata": { "priority": 2, "lambda_max": 1000 }
+    },
+    {
+      "id": "right_wall_contact",
+      "type": "constraint",
+      "model": "inequality",
+      "between": ["charged_ball", "right_wall"],
+      "parameters": { "condition": "charged_ball.x <= right_wall.left", "compliance": 0.000001 },
+      "metadata": { "priority": 2, "lambda_max": 1000 }
+    }
+  ],
+  "fields": [
+    {
+      "id": "gravity_field",
+      "model": "uniform",
+      "vector": [0, -9.81],
+      "metadata": { "description": "重力场", "render": { "color": "#2f9e44", "pointShape": "circle", "fieldDensity": 0.7, "opacity": 0.45 } }
+    },
+    {
+      "id": "horizontal_e_field",
+      "model": "uniform",
+      "vector": [6, 0],
+      "metadata": {
+        "tags": ["electric"],
+        "description": "水平向右匀强电场 F = qE",
+        "render": { "color": "#c92a2a", "pointShape": "diamond", "fieldDensity": 1.2, "opacity": 0.55 }
+      }
+    },
+    {
+      "id": "vertical_b_field",
+      "model": "uniform",
+      "vector": [0, 0, 3],
+      "metadata": {
+        "tags": ["magnetic"],
+        "description": "垂直纸面向外匀强磁场 F = qv×B",
+        "render": { "color": "#7048e8", "pointShape": "cross", "fieldDensity": 1.1, "opacity": 0.5 }
+      }
+    }
+  ],
+  "initial_state": {
+    "charged_ball": { "position": [-2, 3], "velocity": [4, 0] },
+    "ground": { "position": [0, -4.5], "velocity": [0, 0] },
+    "left_wall": { "position": [-4.85, 0], "velocity": [0, 0] },
+    "right_wall": { "position": [4.85, 0], "velocity": [0, 0] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "acceleration": true, "energy": true, "power": true, "work": true },
+  "timeline": { "keyframes": [{ "t": 0, "state": "initial" }], "terminal_condition": "t >= 8" }
+}

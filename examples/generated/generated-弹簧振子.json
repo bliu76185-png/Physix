@@ -1,0 +1,248 @@
+{
+  "_title": "Anchor、Mass、Ground",
+  "_prompt": "弹簧振子",
+  "_generatedAt": "2026-06-21T13:56:45.867Z",
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "m",
+      "time": "s",
+      "mass": "kg",
+      "angle": "rad"
+    },
+    "scale": 100,
+    "bounds": {
+      "min": [
+        -5,
+        -1
+      ],
+      "max": [
+        5,
+        6
+      ]
+    },
+    "constants": {
+      "g": 9.81
+    },
+    "gravity": {
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "anchor",
+      "label": "Anchor",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "steel"
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          0.2,
+          0.2
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#6c757d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "mass",
+      "label": "Mass",
+      "type": "particle",
+      "properties": {
+        "mass": 2,
+        "radius": 0.2,
+        "material": "rubber"
+      },
+      "degrees_of_freedom": {
+        "translation": true
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 0.2
+      },
+      "metadata": {
+        "role": "dynamic",
+        "render": {
+          "color": "#1f8a70",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "ground",
+      "label": "Ground",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete"
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          10,
+          1
+        ]
+      },
+      "metadata": {
+        "role": "anchor",
+        "fixed": true,
+        "render": {
+          "color": "#6c757d",
+          "visible": true
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "spring_connection",
+      "type": "constraint",
+      "model": "spring",
+      "between": [
+        "anchor",
+        "mass"
+      ],
+      "parameters": {
+        "rest_length": 1,
+        "stiffness": 50,
+        "damping": 0,
+        "compliance": 0.000001,
+        "value": 1
+      },
+      "metadata": {
+        "priority": 5,
+        "lambda_max": 1000,
+        "tags": [
+          "spring"
+        ],
+        "description": "spring tension / elastic force",
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    },
+    {
+      "id": "gravity_on_mass",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "mass"
+      ]
+    },
+    {
+      "id": "ground_contact",
+      "type": "constraint",
+      "model": "inequality",
+      "between": [
+        "mass",
+        "ground"
+      ],
+      "parameters": {
+        "condition": "mass.y >= ground.top",
+        "compliance": 0.000001
+      },
+      "metadata": {
+        "priority": 2,
+        "lambda_max": 981,
+        "contactAdsorption": {
+          "enabled": true,
+          "velocityThreshold": 2
+        },
+        "repairedBy": [
+          "Stable Constraint Spec v1.0"
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        -9.81
+      ]
+    }
+  ],
+  "initial_state": {
+    "anchor": {
+      "position": [
+        0,
+        5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "mass": {
+      "position": [
+        0,
+        3.1076
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "ground": {
+      "position": [
+        0,
+        -0.5
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "energy": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 6",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      }
+    ]
+  }
+}

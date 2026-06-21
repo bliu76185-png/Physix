@@ -1,0 +1,1581 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": {
+      "length": "px",
+      "time": "s",
+      "mass": "kg"
+    },
+    "scale": 1,
+    "bounds": {
+      "min": [
+        0,
+        0
+      ],
+      "max": [
+        720,
+        560
+      ]
+    },
+    "constants": {
+      "g": 980
+    },
+    "gravity": {
+      "vector": [
+        0,
+        980
+      ]
+    }
+  },
+  "objects": [
+    {
+      "id": "center_anchor",
+      "label": "圆心锚点",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 5
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#333333",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "particle",
+      "label": "质点",
+      "type": "particle",
+      "properties": {
+        "mass": 1,
+        "radius": 10,
+        "material": "steel",
+        "friction": 0.1
+      },
+      "degrees_of_freedom": {
+        "translation": true,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "circle",
+        "radius": 10
+      },
+      "metadata": {
+        "render": {
+          "color": "#e74c3c",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_0",
+      "label": "轨道段 0",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297438,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_1",
+      "label": "轨道段 1",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297434,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_2",
+      "label": "轨道段 2",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297473,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_3",
+      "label": "轨道段 3",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297427,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_4",
+      "label": "轨道段 4",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297505,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_5",
+      "label": "轨道段 5",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297427,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_6",
+      "label": "轨道段 6",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429742,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_7",
+      "label": "轨道段 7",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429749,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_8",
+      "label": "轨道段 8",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297438,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_9",
+      "label": "轨道段 9",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297438,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_10",
+      "label": "轨道段 10",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297434,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_11",
+      "label": "轨道段 11",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297473,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_12",
+      "label": "轨道段 12",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297427,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_13",
+      "label": "轨道段 13",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297445,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_14",
+      "label": "轨道段 14",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429749,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_15",
+      "label": "轨道段 15",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429742,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_16",
+      "label": "轨道段 16",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429744,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_17",
+      "label": "轨道段 17",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429749,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_18",
+      "label": "轨道段 18",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297406,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_19",
+      "label": "轨道段 19",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297477,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_20",
+      "label": "轨道段 20",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297406,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_21",
+      "label": "轨道段 21",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429749,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_22",
+      "label": "轨道段 22",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297445,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_23",
+      "label": "轨道段 23",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297427,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_24",
+      "label": "轨道段 24",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429742,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_25",
+      "label": "轨道段 25",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429756,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_26",
+      "label": "轨道段 26",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297434,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_27",
+      "label": "轨道段 27",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297377,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_28",
+      "label": "轨道段 28",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429744,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_29",
+      "label": "轨道段 29",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297534,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_30",
+      "label": "轨道段 30",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297427,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_31",
+      "label": "轨道段 31",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297424,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_32",
+      "label": "轨道段 32",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.146722824297427,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_33",
+      "label": "轨道段 33",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429742,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_34",
+      "label": "轨道段 34",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429753,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    },
+    {
+      "id": "rail_seg_35",
+      "label": "轨道段 35",
+      "type": "rigid_body",
+      "properties": {
+        "mass": 1000000,
+        "inertia": 1000000,
+        "material": "concrete",
+        "friction": 0.3
+      },
+      "degrees_of_freedom": {
+        "translation": false,
+        "rotation": false
+      },
+      "geometry": {
+        "type": "box",
+        "size": [
+          26.14672282429741,
+          8
+        ]
+      },
+      "metadata": {
+        "fixed": true,
+        "render": {
+          "color": "#7f8c8d",
+          "visible": true
+        }
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "gravity_on_particle",
+      "type": "field",
+      "model": "uniform",
+      "field": "g_field",
+      "applies_to": [
+        "particle"
+      ]
+    },
+    {
+      "id": "circular_constraint",
+      "type": "constraint",
+      "model": "distance",
+      "between": [
+        "particle",
+        "center_anchor"
+      ],
+      "parameters": {
+        "value": 150,
+        "compliance": 0
+      },
+      "metadata": {
+        "description": "刚性距离约束，将质点约束在半径 150px 的圆周上"
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "g_field",
+      "model": "uniform",
+      "vector": [
+        0,
+        980
+      ],
+      "metadata": {
+        "render": {
+          "color": "#2f9e44",
+          "pointShape": "circle",
+          "fieldDensity": 0.6,
+          "opacity": 0.4
+        }
+      }
+    }
+  ],
+  "initial_state": {
+    "center_anchor": {
+      "position": [
+        360,
+        280
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "particle": {
+      "position": [
+        510,
+        280
+      ],
+      "velocity": [
+        0,
+        -250
+      ]
+    },
+    "rail_seg_0": {
+      "position": [
+        509.4292047137618,
+        293.0733614121487
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_1": {
+      "position": [
+        504.88887394336024,
+        318.8228567653781
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_2": {
+      "position": [
+        495.9461680554975,
+        343.3927392611049
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_3": {
+      "position": [
+        482.8728066433488,
+        366.0364654526569
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_4": {
+      "position": [
+        466.06601717798213,
+        386.06601717798213
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_5": {
+      "position": [
+        446.0364654526569,
+        402.8728066433488
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_6": {
+      "position": [
+        423.3927392611049,
+        415.9461680554975
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_7": {
+      "position": [
+        398.82285676537816,
+        424.88887394336024
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_8": {
+      "position": [
+        373.0733614121487,
+        429.4292047137618
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_9": {
+      "position": [
+        346.9266385878513,
+        429.4292047137618
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_10": {
+      "position": [
+        321.1771432346219,
+        424.88887394336024
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_11": {
+      "position": [
+        296.6072607388951,
+        415.94616805549754
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_12": {
+      "position": [
+        273.9635345473431,
+        402.8728066433488
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_13": {
+      "position": [
+        253.93398282201787,
+        386.06601717798213
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_14": {
+      "position": [
+        237.12719335665128,
+        366.03646545265696
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_15": {
+      "position": [
+        224.05383194450252,
+        343.3927392611049
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_16": {
+      "position": [
+        215.11112605663976,
+        318.82285676537816
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_17": {
+      "position": [
+        210.57079528623817,
+        293.07336141214876
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_18": {
+      "position": [
+        210.57079528623817,
+        266.9266385878513
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_19": {
+      "position": [
+        215.11112605663973,
+        241.17714323462195
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_20": {
+      "position": [
+        224.0538319445025,
+        216.6072607388951
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_21": {
+      "position": [
+        237.12719335665122,
+        193.96353454734307
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_22": {
+      "position": [
+        253.93398282201787,
+        173.93398282201787
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_23": {
+      "position": [
+        273.96353454734304,
+        157.12719335665128
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_24": {
+      "position": [
+        296.607260738895,
+        144.05383194450255
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_25": {
+      "position": [
+        321.1771432346219,
+        135.11112605663976
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_26": {
+      "position": [
+        346.92663858785124,
+        130.57079528623817
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_27": {
+      "position": [
+        373.0733614121487,
+        130.57079528623817
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_28": {
+      "position": [
+        398.82285676537805,
+        135.11112605663973
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_29": {
+      "position": [
+        423.3927392611048,
+        144.05383194450246
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_30": {
+      "position": [
+        446.0364654526569,
+        157.12719335665122
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_31": {
+      "position": [
+        466.0660171779821,
+        173.93398282201787
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_32": {
+      "position": [
+        482.8728066433487,
+        193.96353454734304
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_33": {
+      "position": [
+        495.9461680554974,
+        216.607260738895
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_34": {
+      "position": [
+        504.88887394336024,
+        241.1771432346219
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    },
+    "rail_seg_35": {
+      "position": [
+        509.4292047137618,
+        266.92663858785124
+      ],
+      "velocity": [
+        0,
+        0
+      ]
+    }
+  },
+  "events": [],
+  "observables": {
+    "position": true,
+    "velocity": true,
+    "energy": true,
+    "constraint_error": true,
+    "events": true
+  },
+  "timeline": {
+    "terminal_condition": "t >= 10",
+    "keyframes": [
+      {
+        "t": 0,
+        "state": "initial"
+      },
+      {
+        "t": 1.5,
+        "description": "质点到达最高点附近"
+      },
+      {
+        "t": 3,
+        "description": "质点到达左侧"
+      },
+      {
+        "t": 4.5,
+        "description": "质点到达最低点"
+      }
+    ]
+  }
+}

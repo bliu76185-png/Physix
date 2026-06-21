@@ -1,0 +1,107 @@
+{
+  "version": "3.0",
+  "world": {
+    "units": { "length": "m", "time": "s", "mass": "kg", "charge": "C" },
+    "bounds": { "min": [-4, -1], "max": [4, 5] },
+    "constants": {},
+    "gravity": { "vector": [0, 0] }
+  },
+  "objects": [
+    {
+      "id": "p1",
+      "label": "粒子 x=−1.5",
+      "type": "particle",
+      "properties": { "mass": 0.5, "radius": 0.1, "restitution": 0.3, "friction": 0.3 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.1 },
+      "metadata": { "role": "dynamic", "render": { "color": "#c92a2a", "visible": true }, "description": "起始 x=-1.5，sin(x*2)≈-0.14，受力向下偏小" }
+    },
+    {
+      "id": "p2",
+      "label": "粒子 x=0",
+      "type": "particle",
+      "properties": { "mass": 0.5, "radius": 0.1, "restitution": 0.3, "friction": 0.3 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.1 },
+      "metadata": { "role": "dynamic", "render": { "color": "#1f8a70", "visible": true }, "description": "起始 x=0，sin(0)=0，受力为零（不动）" }
+    },
+    {
+      "id": "p3",
+      "label": "粒子 x=1.5",
+      "type": "particle",
+      "properties": { "mass": 0.5, "radius": 0.1, "restitution": 0.3, "friction": 0.3 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.1 },
+      "metadata": { "role": "dynamic", "render": { "color": "#2c7be5", "visible": true }, "description": "起始 x=1.5，sin(x*2)≈0.14，受力向下偏小（同 p1）" }
+    },
+    {
+      "id": "p4",
+      "label": "粒子 x=−0.75",
+      "type": "particle",
+      "properties": { "mass": 0.5, "radius": 0.1, "restitution": 0.3, "friction": 0.3 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.1 },
+      "metadata": { "role": "dynamic", "render": { "color": "#f08c00", "visible": true }, "description": "起始 x=-0.75，sin(-1.5)≈-1.0，受力向下最大" }
+    },
+    {
+      "id": "p5",
+      "label": "粒子 x=0.75",
+      "type": "particle",
+      "properties": { "mass": 0.5, "radius": 0.1, "restitution": 0.3, "friction": 0.3 },
+      "degrees_of_freedom": { "translation": true },
+      "geometry": { "type": "circle", "radius": 0.1 },
+      "metadata": { "role": "dynamic", "render": { "color": "#ae3ec9", "visible": true }, "description": "起始 x=0.75，sin(1.5)≈1.0，受力向下最大" }
+    },
+    {
+      "id": "ground",
+      "label": "地面",
+      "type": "rigid_body",
+      "properties": { "mass": 1e10, "inertia": 1e10, "restitution": 0.2, "friction": 0.5 },
+      "degrees_of_freedom": { "translation": false, "rotation": false },
+      "geometry": { "type": "box", "size": [8, 0.3] },
+      "metadata": { "role": "anchor", "fixed": true, "render": { "color": "#6c757d", "visible": true } }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "spatial_gravity",
+      "type": "field",
+      "model": "uniform",
+      "field": "position_dependent_g",
+      "applies_to": ["p1", "p2", "p3", "p4", "p5"]
+    },
+    {
+      "id": "ground_contact_all",
+      "type": "constraint",
+      "model": "inequality",
+      "between": ["p1", "ground"],
+      "parameters": { "condition": "p1.y >= ground.top", "compliance": 0.000001 },
+      "metadata": { "priority": 2, "lambda_max": 500 }
+    }
+  ],
+  "fields": [
+    {
+      "id": "position_dependent_g",
+      "model": "uniform",
+      "vector": [0, -9.81],
+      "variation": {
+        "spatial": "abs(sin(x*2))"
+      },
+      "metadata": {
+        "description": "重力随空间变化 g(y) = g₀ × |sin(2x)|，x=-0.75,0.75 处力最强，x=0 处力为零",
+        "render": { "color": "#2f9e44", "pointShape": "circle", "fieldDensity": 1.5, "opacity": 0.5 }
+      }
+    }
+  ],
+  "initial_state": {
+    "p1": { "position": [-1.5, 4], "velocity": [0, 0] },
+    "p2": { "position": [0, 4], "velocity": [0, 0] },
+    "p3": { "position": [1.5, 4], "velocity": [0, 0] },
+    "p4": { "position": [-0.75, 3], "velocity": [0, 0] },
+    "p5": { "position": [0.75, 3], "velocity": [0, 0] },
+    "ground": { "position": [0, -0.7], "velocity": [0, 0] }
+  },
+  "events": [],
+  "observables": { "position": true, "velocity": true, "acceleration": true, "energy": true, "power": true, "work": true },
+  "timeline": { "keyframes": [{ "t": 0, "state": "initial" }], "terminal_condition": "t >= 5" }
+}
